@@ -9,9 +9,9 @@ firebaseApp.firestore().settings({
 
 firebaseApp.firestore().enablePersistence()
 	.catch(function (err) {
-		if (err.code == 'failed-precondition') {
+		if (err.code === 'failed-precondition') {
 			console.log("FAILED");
-		} else if (err.code == 'unimplemented') {
+		} else if (err.code === 'unimplemented') {
 			console.log("UNIMPLEMENTED");
 		}
 	});

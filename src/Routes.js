@@ -5,7 +5,7 @@ import { PathContext, AuthContext } from './store/Context';
 import Drawer from './components/Drawer';
 import NavbarComponent from './components/NavbarComponent';
 
-import { Container, Row, Col, Jumbotron } from 'react-bootstrap';
+import { Row, Col, Jumbotron } from 'react-bootstrap';
 
 import LoginPage from './pages/LoginPage';
 

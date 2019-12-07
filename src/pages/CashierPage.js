@@ -4,7 +4,7 @@ import { firebaseApp } from '../utils/Firebase';
 
 import DataTables from '../components/DataTables';
 
-import { Table, Modal, Form, Button, Col, Row } from 'react-bootstrap';
+import { Table, Modal, Form, Button, Col, Row, InputGroup, DropdownButton, Dropdown } from 'react-bootstrap';
 
 function CashierTableRow({ index, data }) {
     return (
@@ -67,9 +67,65 @@ function CashierTable({ cashierDatas, tax }) {
     );
 }
 
-function AddModal({ show, handleClose, handleConfirmation }) {
+function AddModal({ show, handleClose, handleConfirmation, fee, staffs }) {
 
     const [qty, setQty] = useState(0);
+
+    const [beautician, setBeautician] = useState('');
+    const [doctor, setDoctor] = useState('');
+    const [nurse, setNurse] = useState('');
+
+    function getStaff(role) {
+        let output = [];
+        if (staffs.length) {
+            staffs.forEach((staff) => {
+                if (staff.role === role) {
+                    output.push(staff.name);
+                }
+            });
+        }
+
+        return output;
+    }
+
+    function addData() {
+        const staffData = {
+            beautician: beautician,
+            doctor: doctor,
+            nurse: nurse
+        }
+        handleConfirmation(qty, staffData);
+    }
+
+    function StaffDropdown({ title, role, changeStaff, staffValue }) {
+        return (
+            <Form.Group>
+                <Col>
+                    <Form.Label>{title}</Form.Label>
+                </Col>
+                <Col>
+                    <InputGroup className="mb-3">
+                        <DropdownButton id="dropdown-item-button" title={title}>
+                            {
+                                getStaff(role).map((staff, index) => {
+                                    return (
+                                        <Dropdown.Item
+                                            key={index}
+                                            as="button"
+                                            onClick={() => changeStaff(staff)}
+                                        >
+                                            {staff}
+                                        </Dropdown.Item>
+                                    );
+                                })
+                            }
+                        </DropdownButton>
+                        <Form.Control value={staffValue} readOnly />
+                    </InputGroup>
+                </Col>
+            </Form.Group>
+        );
+    }
 
     return (
         <Modal show={show} onHide={handleClose}>
@@ -77,20 +133,63 @@ function AddModal({ show, handleClose, handleConfirmation }) {
                 <Modal.Title>Tambahka data</Modal.Title>
             </Modal.Header>
             <Modal.Body>
-                <Form.Control
-                    placeholder="Quantity"
-                    value={qty}
-                    type="number"
-                    onChange={(e) => setQty(e.target.value)}
-                />
+                <Form.Group>
+                    <Col>
+                        <Form.Label>Jumlah</Form.Label>
+                    </Col>
+                    <Col>
+                        <Form.Control
+                            value={qty}
+                            type="number"
+                            onChange={(e) => setQty(e.target.value)}
+                        />
+                    </Col>
+
+                </Form.Group>
+                {
+                    fee ? (
+                        fee.beautician ? (
+                            <StaffDropdown
+                                title="Beautician"
+                                role="beautician"
+                                changeStaff={setBeautician}
+                                staffValue={beautician}
+                            />
+                        ) : null
+                    ) : null
+                }
+                {
+                    fee ? (
+                        fee.doctor ? (
+                            <StaffDropdown
+                                title="Doctor"
+                                role="doctor"
+                                changeStaff={setDoctor}
+                                staffValue={doctor}
+                            />
+                        ) : null
+                    ) : null
+                }
+                {
+                    fee ? (
+                        fee.nurse ? (
+                            <StaffDropdown
+                                title="Nurse"
+                                role="nurse"
+                                changeStaff={setNurse}
+                                staffValue={nurse}
+                            />
+                        ) : null
+                    ) : null
+                }
             </Modal.Body>
             <Modal.Footer>
                 <Button variant="link" onClick={handleClose}>
                     Close
             </Button>
-                <Button variant="primary" onClick={() => handleConfirmation(qty)}>
+                <Button variant="primary" onClick={addData}>
                     Tambahkan
-            </Button>
+                </Button>
             </Modal.Footer>
         </Modal>
     );
@@ -99,6 +198,8 @@ function AddModal({ show, handleClose, handleConfirmation }) {
 export default () => {
 
     const [services, setServices] = useState([[]]);
+    const [staffs, setStaffs] = useState([[]]);
+
     const [currAddData, setCurrAddData] = useState({});
 
     const [showAddModal, setShowAddModal] = useState(false);
@@ -156,34 +257,58 @@ export default () => {
             .doc("tax").onSnapshot((snap) => {
                 setTax(snap.data().value)
             });
+
+        const unsubscribeStaffs = firebaseApp.firestore()
+            .collection('clinics')
+            .doc("GABRIEL")
+            .collection("staffs")
+            .onSnapshot((snapshot) => {
+                let newStaffs = [];
+                snapshot.forEach((snap) => {
+                    newStaffs.push(snap.data());
+                });
+                setStaffs(newStaffs);
+            });
+
         return () => {
             unsubscribeServices();
             unsubscribeTax();
+            unsubscribeStaffs();
         }
     }, []);
 
-    function insertToCashierTable(qty) {
+    function insertToCashierTable(qty, staff) {
         setShowAddModal(false);
         let dataToInsert = currAddData;
         dataToInsert.qty = qty;
+        dataToInsert.staff = staff;
         setCashierDatas([...cashierDatas, dataToInsert]);
+    }
+
+    function addDataToDb() {
+        console.log(cashierDatas)
     }
 
     const headers = ["#", "Nama", "Harga", "Beautician", "Dokter", "Perawat", "Keterangan", ""];
     const suffix = ["", "", "CURR", " %", " %", " %", "", "FUN"];
 
     return (
-        <div>
+        <>
             <CashierTable
                 tax={tax}
                 cashierDatas={cashierDatas}
             />
+             <Button variant="primary" onClick={addDataToDb}>
+                    Submit
+                </Button>
             <DataTables items={services} headers={headers} suffix={suffix} />
             <AddModal
                 show={showAddModal}
+                fee={currAddData.fee}
+                staffs={staffs}
                 handleClose={() => setShowAddModal(false)}
                 handleConfirmation={insertToCashierTable}
             />
-        </div>
+        </>
     );
 }
