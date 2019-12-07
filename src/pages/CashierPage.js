@@ -88,13 +88,21 @@ function AddModal({ show, handleClose, handleConfirmation, fee, staffs }) {
         return output;
     }
 
+    function resetData() {
+        setQty(0);
+        setBeautician('');
+        setDoctor('');
+        setNurse('');
+    }
+
     function addData() {
         const staffData = {
             beautician: beautician,
             doctor: doctor,
             nurse: nurse
         }
-        handleConfirmation(qty, staffData);
+        handleConfirmation(Number(qty), staffData);
+        resetData();
     }
 
     function StaffDropdown({ title, role, changeStaff, staffValue }) {
@@ -286,7 +294,87 @@ export default () => {
     }
 
     function addDataToDb() {
-        console.log(cashierDatas)
+
+        const today = new Date();
+        const date = today.getDate() + '-' + today.getMonth() + '-' + today.getFullYear();
+        const time = today.getHours() + ':' + today.getMinutes() + ':' + today.getSeconds();
+
+        console.log(time)
+
+        const salesRef = firebaseApp.firestore()
+            .collection('clinics')
+            .doc("GABRIEL")
+            .collection("sales").doc();
+
+        // const comissionRef = firebaseApp.firestore()
+        //     .collection('clinics')
+        //     .doc("GABRIEL")
+        //     .collection("comissions").doc();
+
+        // let allCommisions = []
+        // cashierDatas.forEach((cashierData) => {
+
+        //     if (cashierData.fee) {
+        //         let comissionData = {
+        //             name: cashierData.name,
+        //             price: cashierData.price,
+        //             qty: cashierData.qty,
+
+        //             beautician: {},
+        //             doctor: {},
+        //             nurse: {}
+        //         };
+
+        //         if (cashierData.fee.beautician) {
+        //             comissionData.beautician = {
+        //                 name: cashierData.staff.beautician,
+        //                 perc: cashierData.fee.beautician,
+        //                 comission: (cashierData.price * cashierData.qty) * (100 - cashierData.fee.beautician) / 100
+        //             }
+        //         }
+        //         if (cashierData.fee.doctor) {
+        //             comissionData.doctor = {
+        //                 name: cashierData.staff.doctor,
+        //                 perc: cashierData.fee.doctor,
+        //                 comission: (cashierData.price * cashierData.qty) * (100 - cashierData.fee.doctor) / 100
+        //             }
+        //         }
+        //         if (cashierData.fee.nurse) {
+        //             comissionData.nurse = {
+        //                 name: cashierData.staff.nurse,
+        //                 perc: cashierData.fee.nurse,
+        //                 comission: (cashierData.price * cashierData.qty) * (100 - cashierData.fee.nurse) / 100
+        //             }
+        //         }
+
+        //         allCommisions.push(comissionData);
+        //     }
+        // });
+
+
+        // const comissionDataToSave = {
+        //     salesId: salesRef.id,
+        //     commisions: allCommisions,
+        //     date: date,
+        // }
+
+        // console.log("SAVE COMISSION", comissionDataToSave)
+
+        const salesDataToSave = {
+            id: salesRef.id,
+            corrected: false,
+            sales: cashierDatas,
+            date: date,
+            time: time,
+        }
+        console.log("SAVE SALES", salesDataToSave)
+        salesRef.set(salesDataToSave)
+            .then(() => {
+                window.alert("Data Berhasil Ditambah");
+            })
+            .catch((e) => {
+                window.alert("Terjadi Kesalahan Silahkan Coba Lagi");
+            });
     }
 
     const headers = ["#", "Nama", "Harga", "Beautician", "Dokter", "Perawat", "Keterangan", ""];
@@ -298,8 +386,8 @@ export default () => {
                 tax={tax}
                 cashierDatas={cashierDatas}
             />
-             <Button variant="primary" onClick={addDataToDb}>
-                    Submit
+            <Button variant="primary" onClick={addDataToDb}>
+                Submit
                 </Button>
             <DataTables items={services} headers={headers} suffix={suffix} />
             <AddModal
