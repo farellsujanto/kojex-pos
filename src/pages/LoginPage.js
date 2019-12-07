@@ -1,23 +1,19 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 
-import { firebaseApp } from '../utils/Firebase';
+import { AuthContext } from '../store/Context';
 
 import { Container, Jumbotron, Row, Col, Form, Button } from 'react-bootstrap';
 
-const DOMAIN_EXTENSION = "decodesmedia.com";
-
 export default () => {
 
-    const [username, setUsername] = useState('');
+    const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+    const [, setAuth] = useContext(AuthContext);
 
     function signIn() {
-        const email = username + "@" + DOMAIN_EXTENSION;
-        
-        firebaseApp.auth().signInWithEmailAndPassword(email, password)
-        .catch((error) => {
-            window.alert(error.message)
-        });
+        if (email === 'admin@admin.com' && password === 'adminadmin') {
+            setAuth(true);
+        }
     }
 
     return (
@@ -27,7 +23,7 @@ export default () => {
                     <Jumbotron>
                         <Col>
                             <Form.Label>Username</Form.Label>
-                            <Form.Control onChange={(e) => setUsername(e.target.value)} type="text" />
+                            <Form.Control onChange={(e) => setEmail(e.target.value)} type="text" />
                             <Form.Label>Password</Form.Label>
                             <Form.Control onChange={(e) => setPassword(e.target.value)}  type="password" />
                             <Button className="mt-5" variant="primary" block onClick={signIn}>Login</Button>

@@ -1,0 +1,562 @@
+[
+    {
+        "name": "Basic Facial",
+        "price": 75000,
+        "fee": {
+            "beautician": 5,
+            "doctor": 0,
+            "nurse": 0
+        },
+        "desc": ""
+    },
+    {
+        "name": "Facial Acne",
+        "price": 115000,
+        "fee": {
+            "beautician": 5,
+            "doctor": 0,
+            "nurse": 0
+        },
+        "desc": ""
+    },
+    {
+        "name": "Facial Rejuve",
+        "price": 125000,
+        "fee": {
+            "beautician": 5,
+            "doctor": 0,
+            "nurse": 0
+        },
+        "desc": ""
+    },
+    {
+        "name": "Facial Brightening",
+        "price": 115000,
+        "fee": {
+            "beautician": 5,
+            "doctor": 0,
+            "nurse": 0
+        },
+        "desc": ""
+    },
+    {
+        "name": "Galvanic with Serum",
+        "price": 55000,
+        "fee": {
+            "beautician": 10,
+            "doctor": 0,
+            "nurse": 0
+        },
+        "desc": ""
+    },
+    {
+        "name": "Gold Mask",
+        "price": 35000,
+        "fee": {
+            "beautician": 20,
+            "doctor": 0,
+            "nurse": 0
+        },
+        "desc": ""
+    },
+    {
+        "name": "Oxy Jeet Peel",
+        "price": 55000,
+        "fee": {
+            "beautician": 20,
+            "doctor": 0,
+            "nurse": 0
+        },
+        "desc": ""
+    },
+    {
+        "name": "Totok Wajah",
+        "price": 15000,
+        "fee": {
+            "beautician": 20,
+            "doctor": 0,
+            "nurse": 0
+        },
+        "desc": ""
+    },
+    {
+        "name": "PDT",
+        "price": 70000,
+        "fee": {
+            "beautician": 20,
+            "doctor": 0,
+            "nurse": 0
+        },
+        "desc": ""
+    },
+    {
+        "name": "Full Facial Premium",
+        "price": 295000,
+        "fee": {
+            "beautician": 10,
+            "doctor": 0,
+            "nurse": 0
+        },
+        "desc": ""
+    },
+    {
+        "name": "Microdermabrasi",
+        "price": 150000,
+        "fee": {
+            "beautician": 15,
+            "doctor": 15,
+            "nurse": 0
+        },
+        "desc": ""
+    },
+    {
+        "name": "Chemical Peeling (Acne)",
+        "price": 150000,
+        "fee": {
+            "beautician": 0,
+            "doctor": 15,
+            "nurse": 0
+        },
+        "desc": ""
+    },
+    {
+        "name": "Chemical Peeling (Anti Aging)",
+        "price": 175000,
+        "fee": {
+            "beautician": 0,
+            "doctor": 15,
+            "nurse": 0
+        },
+        "desc": ""
+    },
+    {
+        "name": "Chemical Peeling (Brightening)",
+        "price": 150000,
+        "fee": {
+            "beautician": 0,
+            "doctor": 15,
+            "nurse": 0
+        },
+        "desc": ""
+    },
+    {
+        "name": "Blood Facial (Dermapen)",
+        "price": 350000,
+        "fee": {
+            "beautician": 0,
+            "doctor": 15,
+            "nurse": 2
+        },
+        "desc": ""
+    },
+    {
+        "name": "Blood Facial (Dermaroller)",
+        "price": 250000,
+        "fee": {
+            "beautician": 0,
+            "doctor": 15,
+            "nurse": 2
+        },
+        "desc": ""
+    },
+    {
+        "name": "Add Growth Factor Serum",
+        "price": 150000,
+        "fee": {
+            "beautician": 0,
+            "doctor": 15,
+            "nurse": 0
+        },
+        "desc": ""
+    },
+    {
+        "name": "Add Brightening",
+        "price": 140000,
+        "fee": {
+            "beautician": 0,
+            "doctor": 15,
+            "nurse": 0
+        },
+        "desc": ""
+    },
+    {
+        "name": "Add Combo Brightening and Glowing",
+        "price": 200000,
+        "fee": {
+            "beautician": 0,
+            "doctor": 15,
+            "nurse": 0
+        },
+        "desc": ""
+    },
+    {
+        "name": "Add PRP",
+        "price": 250000,
+        "fee": {
+            "beautician": 0,
+            "doctor": 15,
+            "nurse": 0
+        },
+        "desc": ""
+    },
+    {
+        "name": "Cleansing Face",
+        "price": 15000,
+        "fee": {
+            "beautician": 0,
+            "doctor": 0,
+            "nurse": 25
+        },
+        "desc": ""
+    },
+    {
+        "name": "Napphage with Growth Factor",
+        "price": 150000,
+        "fee": {
+            "beautician": 0,
+            "doctor": 17,
+            "nurse": 2
+        },
+        "desc": ""
+    },
+    {
+        "name": "Napphage Combo Glowing and Brightening",
+        "price": 250000,
+        "fee": {
+            "beautician": 0,
+            "doctor": 17,
+            "nurse": 2
+        },
+        "desc": ""
+    },
+    {
+        "name": "Mesobotox",
+        "price": 950000,
+        "fee": {
+            "beautician": 0,
+            "doctor": 17,
+            "nurse": 2
+        },
+        "desc": ""
+    },
+    {
+        "name": "Botox / unit",
+        "price": 85000,
+        "fee": {
+            "beautician": 0,
+            "doctor": 10,
+            "nurse": 0
+        },
+        "desc": ""
+    },
+    {
+        "name": "Hair Removal (Underarm)",
+        "price": 299000,
+        "fee": {
+            "beautician": 0,
+            "doctor": 10,
+            "nurse": 2
+        },
+        "desc": ""
+    },
+    {
+        "name": "Hair Removal (Beauty Leg)",
+        "price": 399000,
+        "fee": {
+            "beautician": 0,
+            "doctor": 10,
+            "nurse": 2
+        },
+        "desc": ""
+    },
+    {
+        "name": "Hair Removal (Kumis)",
+        "price": 119000,
+        "fee": {
+            "beautician": 0,
+            "doctor": 10,
+            "nurse": 2
+        },
+        "desc": ""
+    },
+    {
+        "name": "Hair Removal (Pubic Hair)",
+        "price": 399000,
+        "fee": {
+            "beautician": 0,
+            "doctor": 10,
+            "nurse": 2
+        },
+        "desc": ""
+    },
+    {
+        "name": "Face Rejuv (I2PL)",
+        "price": 300000,
+        "fee": {
+            "beautician": 0,
+            "doctor": 10,
+            "nurse": 2
+        },
+        "desc": ""
+    },
+    {
+        "name": "Laser Skin Rejuve",
+        "price": 890000,
+        "fee": {
+            "beautician": 0,
+            "doctor": 10,
+            "nurse": 2
+        },
+        "desc": ""
+    },
+    {
+        "name": "Laser Active Acne",
+        "price": 1350000,
+        "fee": {
+            "beautician": 0,
+            "doctor": 10,
+            "nurse": 2
+        },
+        "desc": ""
+    },
+    {
+        "name": "Hollywood Peel (acne)",
+        "price": 900000,
+        "fee": {
+            "beautician": 0,
+            "doctor": 10,
+            "nurse": 2
+        },
+        "desc": ""
+    },
+    {
+        "name": "Hollywood Peel (Brightening)",
+        "price": 850000,
+        "fee": {
+            "beautician": 0,
+            "doctor": 10,
+            "nurse": 2
+        },
+        "desc": ""
+    },
+    {
+        "name": "Collagen Improvement Injection",
+        "price": 700000,
+        "fee": {
+            "beautician": 0,
+            "doctor": 10,
+            "nurse": 3
+        },
+        "desc": ""
+    },
+    {
+        "name": "Vitamin C Injection",
+        "price": 125000,
+        "fee": {
+            "beautician": 0,
+            "doctor": 10,
+            "nurse": 5
+        },
+        "desc": ""
+    },
+    {
+        "name": "Vitamin C plus Collagen",
+        "price": 175000,
+        "fee": {
+            "beautician": 0,
+            "doctor": 10,
+            "nurse": 5
+        },
+        "desc": ""
+    },
+    {
+        "name": "Anti Oksidan Injection",
+        "price": 75000,
+        "fee": {
+            "beautician": 0,
+            "doctor": 10,
+            "nurse": 5
+        },
+        "desc": ""
+    },
+    {
+        "name": "Suntik Jerawat",
+        "price": 75000,
+        "fee": {
+            "beautician": 0,
+            "doctor": 10,
+            "nurse": 0
+        },
+        "desc": ""
+    },
+    {
+        "name": "BodyShape Injection",
+        "price": 425000,
+        "fee": {
+            "beautician": 0,
+            "doctor": 10,
+            "nurse": 2
+        },
+        "desc": ""
+    },
+    {
+        "name": "BodyShape Injection Premium",
+        "price": 1300000,
+        "fee": {
+            "beautician": 0,
+            "doctor": 10,
+            "nurse": 2
+        },
+        "desc": ""
+    },
+    {
+        "name": "V Shape Injection",
+        "price": 425000,
+        "fee": {
+            "beautician": 0,
+            "doctor": 10,
+            "nurse": 2
+        },
+        "desc": ""
+    },
+    {
+        "name": "Detox and Revitalizion Infusion",
+        "price": 250000,
+        "fee": {
+            "beautician": 0,
+            "doctor": 15,
+            "nurse": 5
+        },
+        "desc": ""
+    },
+    {
+        "name": "Korean Infusion",
+        "price": 1250000,
+        "fee": {
+            "beautician": 0,
+            "doctor": 10,
+            "nurse": 5
+        },
+        "desc": ""
+    },
+    {
+        "name": "Korean Infusion",
+        "price": 965000,
+        "fee": {
+            "beautician": 0,
+            "doctor": 10,
+            "nurse": 5
+        },
+        "desc": ""
+    },
+    {
+        "name": "Brightening Infusion",
+        "price": 1500000,
+        "fee": {
+            "beautician": 0,
+            "doctor": 10,
+            "nurse": 5
+        },
+        "desc": ""
+    },
+    {
+        "name": "Filler / cc",
+        "price": 3800000,
+        "fee": {
+            "beautician": 0,
+            "doctor": 15,
+            "nurse": 1
+        },
+        "desc": ""
+    },
+    {
+        "name": "Radiofrequency Venus Viva for Tightening",
+        "price": 650000,
+        "fee": {
+            "beautician": 0,
+            "doctor": 10,
+            "nurse": 2
+        },
+        "desc": ""
+    },
+    {
+        "name": "Radiofrequency Venus Viva for Rejuve",
+        "price": 750000,
+        "fee": {
+            "beautician": 0,
+            "doctor": 10,
+            "nurse": 2
+        },
+        "desc": ""
+    },
+    {
+        "name": "Radiofrequency Venus Viva combine Thightening and Rejuvenation",
+        "price": 1000000,
+        "fee": {
+            "beautician": 0,
+            "doctor": 10,
+            "nurse": 2
+        },
+        "desc": ""
+    },
+    {
+        "name": "AquaPeel (Oily Skin or Acne)",
+        "price": 120000,
+        "fee": {
+            "beautician": 12,
+            "doctor": 0,
+            "nurse": 0
+        },
+        "desc": ""
+    },
+    {
+        "name": "AquaPeel (Moisturizing)",
+        "price": 115000,
+        "fee": {
+            "beautician": 12,
+            "doctor": 0,
+            "nurse": 0
+        },
+        "desc": ""
+    },
+    {
+        "name": "Mesotherapy non needle",
+        "price": 150000,
+        "fee": {
+            "beautician": 15,
+            "doctor": 0,
+            "nurse": 0
+        },
+        "desc": ""
+    },
+    {
+        "name": "Botox Injecton / unit",
+        "price": 88000,
+        "fee": {
+            "beautician": 0,
+            "doctor": 10,
+            "nurse": 2
+        },
+        "desc": ""
+    },
+    {
+        "name": "Acne Injection",
+        "price": 185000,
+        "fee": {
+            "beautician": 0,
+            "doctor": 10,
+            "nurse": 2
+        },
+        "desc": ""
+    },
+    {
+        "name": "Blood Facial next treatment (Dermaroller)",
+        "price": 200000,
+        "fee": {
+            "beautician": 0,
+            "doctor": 15,
+            "nurse": 2
+        },
+        "desc": ""
+    }
+]

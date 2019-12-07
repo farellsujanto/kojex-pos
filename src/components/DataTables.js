@@ -1,31 +1,31 @@
 import React, { useState, useEffect } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { Table, Container, Form, Col, Row } from 'react-bootstrap';
+import { Table, Container, Form, Col, Row, Button } from 'react-bootstrap';
 import ReactPaginate from 'react-paginate';
 
-import { faSort,faSortDown, faSortUp } from '@fortawesome/free-solid-svg-icons';
+import { faSort, faSortDown, faSortUp } from '@fortawesome/free-solid-svg-icons';
 
 
 function TableHead({ headers, sortDataByIndex, sortIndex, repeatedIndex }) {
     return (
         <thead>
             <tr>
-            
+
                 {
                     headers ?
                         headers.map((header, index) => {
                             if (sortIndex === index) {
                                 if (repeatedIndex) {
                                     return (
-                                        <th style={{cursor: 'pointer'}} onClick={() => sortDataByIndex(index)}>{header} <FontAwesomeIcon icon={faSortDown} /></th>
+                                        <th key={index} style={{ cursor: 'pointer' }} onClick={() => sortDataByIndex(index)}>{header} <FontAwesomeIcon icon={faSortDown} /></th>
                                     );
                                 }
                                 return (
-                                    <th style={{cursor: 'pointer'}} onClick={() => sortDataByIndex(index)}>{header} <FontAwesomeIcon icon={faSortUp} /></th>
+                                    <th key={index} style={{ cursor: 'pointer' }} onClick={() => sortDataByIndex(index)}>{header} <FontAwesomeIcon icon={faSortUp} /></th>
                                 );
                             }
                             return (
-                                <th style={{cursor: 'pointer'}} onClick={() => sortDataByIndex(index)}>{header} <FontAwesomeIcon icon={faSort} /></th>
+                                <th key={index} style={{ cursor: 'pointer' }} onClick={() => sortDataByIndex(index)}>{header} <FontAwesomeIcon icon={faSort} /></th>
                             );
                         }) : null
                 }
@@ -34,27 +34,46 @@ function TableHead({ headers, sortDataByIndex, sortIndex, repeatedIndex }) {
     );
 }
 
-function TableRow({ datas }) {
+function TableRow({ datas, suffix, rowIndex }) {
+
+    function formatNumber(x) {
+        return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+    }
+
     return (
         <tr>
             {
                 datas ?
-                    datas.map((data) => {
-                        return (<td>{data}</td>);
+                    datas.map((data, index) => {
+                        if (suffix[index] === "CURR") {
+                            return (<td key={index}>{formatNumber(Number(data))}</td>);
+                        }
+                        if (suffix[index] === "FUN") {
+                            // return (<td key={index}><Button onClick={() => data.fun(rowIndex)}>{data.name}</Button></td>);
+                            return (<td key={index}><Button onClick={data.fun}>{data.name}</Button></td>);
+                        }
+                        return (<td key={index}>{data}{suffix[index]}</td>);
                     }) : null
             }
         </tr>
     );
 }
 
-function TableBody({ items, entries, currentPage }) {
+function TableBody({ items, entries, currentPage, suffix }) {
 
 
     function getItemOnPage() {
         let components = [];
         const counter = entries > items.length ? items.length : entries;
         for (let i = 0; i < counter; i++) {
-            components.push(<TableRow datas={items[i + entries * currentPage]} />);
+            components.push(
+                <TableRow
+                    key={i}
+                    datas={items[i + entries * currentPage]}
+                    suffix={suffix}
+                    rowIndex={i}
+                />
+            );
         }
         return components;
     }
@@ -68,11 +87,11 @@ function TableBody({ items, entries, currentPage }) {
     );
 }
 
-function DataTables({ items, headers }) {
+function DataTables({ items, headers, suffix }) {
 
     const [itemsToShow, setItemsToShow] = useState(items);
 
-    const [entries, setEntries] = useState(3);
+    const [entries, setEntries] = useState(10);
     const [currentPage, setCurrentPage] = useState(0);
 
     const [sortIndex, setSortIndex] = useState(null);
@@ -123,6 +142,8 @@ function DataTables({ items, headers }) {
         setItemsToShow(newItems);
     }
 
+
+
     return (
         <Container>
             <Row>
@@ -143,8 +164,8 @@ function DataTables({ items, headers }) {
                     />
                 </Col>
             </Row>
-            <Row>
-                <Table striped border hover>
+            <Row className="mt-3">
+                <Table striped border="true" hover variant="dark">
                     <TableHead
                         headers={headers}
                         sortDataByIndex={sortDataByIndex}
@@ -155,6 +176,7 @@ function DataTables({ items, headers }) {
                         items={itemsToShow}
                         entries={entries}
                         currentPage={currentPage}
+                        suffix={suffix}
                     />
                 </Table>
             </Row>

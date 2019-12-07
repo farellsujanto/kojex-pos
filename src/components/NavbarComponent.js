@@ -2,18 +2,16 @@ import React from 'react';
 
 import { Navbar, Button, Nav } from 'react-bootstrap';
 
-// import { firebaseApp } from '../utils/Firebase';
+import { firebaseApp } from '../utils/Firebase';
 
 export default () => {
 
     function signOut() {
-    //     firebaseApp.auth().signOut();
+        firebaseApp.auth().signOut();
     }
 
     function getUsername() {
-    //     const email = firebaseApp.auth().currentUser.email;
-    //     const username = email.split('@');
-    //     return username[0];
+        return firebaseApp.auth().currentUser.email;
     }
 
     return (

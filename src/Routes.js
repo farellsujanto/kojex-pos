@@ -10,12 +10,13 @@ import { Container, Row, Col, Jumbotron } from 'react-bootstrap';
 import LoginPage from './pages/LoginPage';
 
 import HomePage from './pages/HomePage';
+import CashierPage from './pages/CashierPage';
 import NotFoundPage from './pages/404Page';
 
 
 function preparePage(children) {
 	return (
-		<Container>
+		<>
 			<Row>
 				<Col sm={3}>
 					<Drawer />
@@ -32,7 +33,7 @@ function preparePage(children) {
 					</Col>
 				</Col>
 			</Row>
-		</Container>
+		</>
 	);
 }
 
@@ -40,6 +41,8 @@ function getLoggedInPath(path) {
 	switch (path) {
 		case '/':
 			return <HomePage />
+		case '/cashier':
+			return <CashierPage />
 		default:
 			return <NotFoundPage />;
 	}

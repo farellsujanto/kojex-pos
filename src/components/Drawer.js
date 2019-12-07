@@ -2,7 +2,8 @@ import React, { useContext } from 'react';
 
 import { PathContext } from '../store/Context';
 
-import { Container, Button, Accordion, 
+import {
+    Container, Button, Accordion,
     // Card, 
 } from 'react-bootstrap';
 // import { useAccordionToggle } from 'react-bootstrap/AccordionToggle';
@@ -94,6 +95,18 @@ import { Container, Button, Accordion,
 //     );
 // }
 
+function ServiceMenu() {
+
+    const [, setPath] = useContext(PathContext);
+
+    return (
+        <>
+            <Button variant="light" onClick={() => setPath('/cashier')} block>
+                Kasir
+            </Button>
+        </>
+    );
+}
 
 export default () => {
 
@@ -107,6 +120,7 @@ export default () => {
                     Home
                 </Button>
                 <br />
+                <ServiceMenu />
                 {/* {
                     role !== 'none' ?
                         <>
