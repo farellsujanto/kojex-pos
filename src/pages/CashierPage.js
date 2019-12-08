@@ -96,6 +96,31 @@ function AddModal({ show, handleClose, handleConfirmation, fee, staffs }) {
     }
 
     function addData() {
+
+
+        if (!qty) {
+            console.log("A")
+            window.alert("Tolong isi semua kolom yang kosong.");
+            return;
+        }
+
+        if (fee) {
+            if (fee.beautician && !beautician) {console.log("B")
+                window.alert("Tolong isi semua kolom yang kosong.");
+                return;
+            }
+
+            if (fee.nurse && !nurse) {console.log("C")
+                window.alert("Tolong isi semua kolom yang kosong.");
+                return;
+            }
+
+            if (fee.doctor && !doctor) {console.log("D")
+                window.alert("Tolong isi semua kolom yang kosong.");
+                return;
+            }
+        }
+
         const staffData = {
             beautician: beautician,
             doctor: doctor,
@@ -306,6 +331,51 @@ export default () => {
             .doc("GABRIEL")
             .collection("sales").doc();
 
+
+
+        const salesDataToSave = {
+            id: salesRef.id,
+            corrected: false,
+            sales: cashierDatas,
+            date: date,
+            time: time,
+            tax: tax
+        }
+        console.log("SAVE SALES", salesDataToSave)
+        salesRef.set(salesDataToSave)
+            .then(() => {
+                window.alert("Data Berhasil Ditambah");
+            })
+            .catch((e) => {
+                window.alert("Terjadi Kesalahan Silahkan Coba Lagi");
+            });
+    }
+
+    const headers = ["#", "Nama", "Harga", "Beautician", "Dokter", "Perawat", "Keterangan", ""];
+    const suffix = ["", "", "CURR", " %", " %", " %", "", "FUN"];
+
+    return (
+        <>
+            <CashierTable
+                tax={tax}
+                cashierDatas={cashierDatas}
+            />
+            <Button variant="primary" onClick={addDataToDb}>
+                Submit
+                </Button>
+            <DataTables items={services} headers={headers} suffix={suffix} />
+            <AddModal
+                show={showAddModal}
+                fee={currAddData.fee}
+                staffs={staffs}
+                handleClose={() => setShowAddModal(false)}
+                handleConfirmation={insertToCashierTable}
+            />
+        </>
+    );
+}
+
+
         // const comissionRef = firebaseApp.firestore()
         //     .collection('clinics')
         //     .doc("GABRIEL")
@@ -359,44 +429,3 @@ export default () => {
         // }
 
         // console.log("SAVE COMISSION", comissionDataToSave)
-
-        const salesDataToSave = {
-            id: salesRef.id,
-            corrected: false,
-            sales: cashierDatas,
-            date: date,
-            time: time,
-        }
-        console.log("SAVE SALES", salesDataToSave)
-        salesRef.set(salesDataToSave)
-            .then(() => {
-                window.alert("Data Berhasil Ditambah");
-            })
-            .catch((e) => {
-                window.alert("Terjadi Kesalahan Silahkan Coba Lagi");
-            });
-    }
-
-    const headers = ["#", "Nama", "Harga", "Beautician", "Dokter", "Perawat", "Keterangan", ""];
-    const suffix = ["", "", "CURR", " %", " %", " %", "", "FUN"];
-
-    return (
-        <>
-            <CashierTable
-                tax={tax}
-                cashierDatas={cashierDatas}
-            />
-            <Button variant="primary" onClick={addDataToDb}>
-                Submit
-                </Button>
-            <DataTables items={services} headers={headers} suffix={suffix} />
-            <AddModal
-                show={showAddModal}
-                fee={currAddData.fee}
-                staffs={staffs}
-                handleClose={() => setShowAddModal(false)}
-                handleConfirmation={insertToCashierTable}
-            />
-        </>
-    );
-}
