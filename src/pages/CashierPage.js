@@ -4,7 +4,18 @@ import { firebaseApp } from '../utils/Firebase';
 
 import DataTables from '../components/DataTables';
 
-import { Table, Modal, Form, Button, Col, Row, InputGroup, DropdownButton, Dropdown } from 'react-bootstrap';
+import { Table, Modal, Form, Button, InputGroup, DropdownButton, Dropdown } from 'react-bootstrap';
+
+import {
+    Card,
+    CardHeader,
+    Col,
+    Row
+} from "reactstrap";
+
+function numberToLocalCurrency(value) {
+    return Number(value).toLocaleString('id');
+}
 
 function CashierTableRow({ index, data }) {
     return (
@@ -12,8 +23,8 @@ function CashierTableRow({ index, data }) {
             <td>{index + 1}</td>
             <td>{data.name}</td>
             <td>{Number(data.qty)}</td>
-            <td>{data.price}</td>
-            <td>{data.price * data.qty}</td>
+            <td>{numberToLocalCurrency(data.price)}</td>
+            <td>{numberToLocalCurrency(data.price * data.qty)}</td>
         </tr>
     );
 }
@@ -33,8 +44,8 @@ function CashierTable({ cashierDatas, tax }) {
     return (
         <Row>
             <Col>
-                <Table>
-                    <thead>
+                <Table className="align-items-center table-flush" responsive>
+                    <thead className="thead-light">
                         <tr>
                             <th>#</th>
                             <th>Barang</th>
@@ -58,10 +69,6 @@ function CashierTable({ cashierDatas, tax }) {
                         }
                     </tbody>
                 </Table>
-            </Col>
-            <Col>
-                <Row>Total : {getTotalPrice()}</Row>
-                <Row>Tax {tax} % : {getTotalPrice() * (100 + tax) / 100}</Row>
             </Col>
         </Row>
     );
@@ -105,17 +112,20 @@ function AddModal({ show, handleClose, handleConfirmation, fee, staffs }) {
         }
 
         if (fee) {
-            if (fee.beautician && !beautician) {console.log("B")
+            if (fee.beautician && !beautician) {
+                console.log("B")
                 window.alert("Tolong isi semua kolom yang kosong.");
                 return;
             }
 
-            if (fee.nurse && !nurse) {console.log("C")
+            if (fee.nurse && !nurse) {
+                console.log("C")
                 window.alert("Tolong isi semua kolom yang kosong.");
                 return;
             }
 
-            if (fee.doctor && !doctor) {console.log("D")
+            if (fee.doctor && !doctor) {
+                console.log("D")
                 window.alert("Tolong isi semua kolom yang kosong.");
                 return;
             }
@@ -241,6 +251,16 @@ export default () => {
     const [tax, setTax] = useState(0);
 
 
+    function getTotalPrice() {
+        let output = 0;
+        if (cashierDatas.length) {
+            cashierDatas.forEach((cashierData) => {
+                output += cashierData.qty * cashierData.price
+            });
+        }
+        return output;
+    }
+
     useEffect(() => {
         const unsubscribeServices = firebaseApp.firestore()
             .collection('clinics')
@@ -324,8 +344,6 @@ export default () => {
         const date = today.getDate() + '-' + today.getMonth() + '-' + today.getFullYear();
         const time = today.getHours() + ':' + today.getMinutes() + ':' + today.getSeconds();
 
-        console.log(time)
-
         const salesRef = firebaseApp.firestore()
             .collection('clinics')
             .doc("GABRIEL")
@@ -341,7 +359,7 @@ export default () => {
             time: time,
             tax: tax
         }
-        console.log("SAVE SALES", salesDataToSave)
+
         salesRef.set(salesDataToSave)
             .then(() => {
                 window.alert("Data Berhasil Ditambah");
@@ -356,14 +374,63 @@ export default () => {
 
     return (
         <>
-            <CashierTable
-                tax={tax}
-                cashierDatas={cashierDatas}
-            />
-            <Button variant="primary" onClick={addDataToDb}>
-                Submit
-                </Button>
-            <DataTables items={services} headers={headers} suffix={suffix} />
+            <Row>
+                <Col md="8">
+                    <Card className="shadow">
+                        <CardHeader className="border-0">
+                            <h3 className="mb-0">Card tables</h3>
+                        </CardHeader>
+                        <CashierTable
+                            tax={tax}
+                            cashierDatas={cashierDatas}
+                        />
+                    </Card>
+                </Col>
+
+                <Col md="4">
+                    <Card className="shadow">
+                        <CardHeader className="border-0">
+                            <h3 className="mb-0">Card tables</h3>
+                        </CardHeader>
+                        <Row>
+                            <Col>
+                                <Table className="align-items-center table-flush" responsive>
+                                    <thead className="thead-light">
+                                        <tr>
+                                            <th scope="col"></th>
+                                            <th scope="col">Biaya</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td><b>Total :</b></td>
+                                            <td>{numberToLocalCurrency(getTotalPrice())}</td>
+                                        </tr>
+                                        <tr>
+                                            <td><b>Tax {tax} % :</b></td>
+                                            <td>{numberToLocalCurrency(getTotalPrice() * (100 + tax) / 100)}</td>
+                                        </tr>
+                                    </tbody>
+                                </Table>
+                            </Col>
+                        </Row>
+                        <Button variant="primary" onClick={addDataToDb}>
+                            Submit
+                        </Button>
+                    </Card>
+                </Col>
+            </Row>
+
+            <Row className="mt-3">
+                <Col>
+                    <Card className="shadow">
+                        <CardHeader className="border-0">
+                            <h3 className="mb-0">Card tables</h3>
+                        </CardHeader>
+                        <DataTables items={services} headers={headers} suffix={suffix} />
+                    </Card>
+                </Col>
+            </Row>
             <AddModal
                 show={showAddModal}
                 fee={currAddData.fee}
@@ -374,58 +441,3 @@ export default () => {
         </>
     );
 }
-
-
-        // const comissionRef = firebaseApp.firestore()
-        //     .collection('clinics')
-        //     .doc("GABRIEL")
-        //     .collection("comissions").doc();
-
-        // let allCommisions = []
-        // cashierDatas.forEach((cashierData) => {
-
-        //     if (cashierData.fee) {
-        //         let comissionData = {
-        //             name: cashierData.name,
-        //             price: cashierData.price,
-        //             qty: cashierData.qty,
-
-        //             beautician: {},
-        //             doctor: {},
-        //             nurse: {}
-        //         };
-
-        //         if (cashierData.fee.beautician) {
-        //             comissionData.beautician = {
-        //                 name: cashierData.staff.beautician,
-        //                 perc: cashierData.fee.beautician,
-        //                 comission: (cashierData.price * cashierData.qty) * (100 - cashierData.fee.beautician) / 100
-        //             }
-        //         }
-        //         if (cashierData.fee.doctor) {
-        //             comissionData.doctor = {
-        //                 name: cashierData.staff.doctor,
-        //                 perc: cashierData.fee.doctor,
-        //                 comission: (cashierData.price * cashierData.qty) * (100 - cashierData.fee.doctor) / 100
-        //             }
-        //         }
-        //         if (cashierData.fee.nurse) {
-        //             comissionData.nurse = {
-        //                 name: cashierData.staff.nurse,
-        //                 perc: cashierData.fee.nurse,
-        //                 comission: (cashierData.price * cashierData.qty) * (100 - cashierData.fee.nurse) / 100
-        //             }
-        //         }
-
-        //         allCommisions.push(comissionData);
-        //     }
-        // });
-
-
-        // const comissionDataToSave = {
-        //     salesId: salesRef.id,
-        //     commisions: allCommisions,
-        //     date: date,
-        // }
-
-        // console.log("SAVE COMISSION", comissionDataToSave)

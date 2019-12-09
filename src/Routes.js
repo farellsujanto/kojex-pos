@@ -13,27 +13,25 @@ import HomePage from './pages/HomePage';
 import CashierPage from './pages/CashierPage';
 import NotFoundPage from './pages/404Page';
 
+import AuthLayout from './layouts/AuthLayout';
+import AdminLayout from './layouts/AdminLayout';
 
 function preparePage(children) {
 	return (
 		<>
-			<Row>
-				<Col sm={3}>
-					<Drawer />
-				</Col>
-				<Col sm={9}>
-					<Col sm={12}>
-						<NavbarComponent />
-						<br />
-					</Col>
-					<Col sm={12}>
-						<Jumbotron>
-							{children}
-						</Jumbotron>
-					</Col>
-				</Col>
-			</Row>
+			<AdminLayout>
+				{children}
+			</AdminLayout>
 		</>
+
+	);
+}
+
+function prepareAuthPage(children) {
+	return (
+		<AuthLayout>
+			{children}
+		</AuthLayout>
 	);
 }
 
@@ -61,7 +59,7 @@ export default function Routes() {
 	const [path] = useContext(PathContext);
 	const [auth] = useContext(AuthContext);
 
-	if (!auth) { return getNotLoggedInPath(path); }
+	if (!auth) { return prepareAuthPage(getNotLoggedInPath(path)); }
 
 	return preparePage(getLoggedInPath(path));
 }

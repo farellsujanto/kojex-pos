@@ -165,7 +165,7 @@ function DataTables({ items, headers, suffix }) {
                 </Col>
             </Row>
             <Row className="mt-3">
-                <Table striped border="true" hover variant="dark">
+                <Table striped border="true" hover variant="dark" responsive>
                     <TableHead
                         headers={headers}
                         sortDataByIndex={sortDataByIndex}
