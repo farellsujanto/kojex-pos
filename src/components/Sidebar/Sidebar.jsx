@@ -145,7 +145,6 @@ function NavigationItem({ title, path }) {
       <NavLink
         style={{ cursor: 'pointer' }}
         onClick={() => setPath(path)}
-        activeClassName="active"
       >
         <i className="ni ni-tv-2 text-primary" />
         {title}

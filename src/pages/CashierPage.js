@@ -17,7 +17,7 @@ function numberToLocalCurrency(value) {
     return Number(value).toLocaleString('id');
 }
 
-function CashierTableRow({ index, data }) {
+function CashierTableRow({ index, data, removeCashierDataOn }) {
     return (
         <tr>
             <td>{index + 1}</td>
@@ -25,21 +25,19 @@ function CashierTableRow({ index, data }) {
             <td>{Number(data.qty)}</td>
             <td>{numberToLocalCurrency(data.price)}</td>
             <td>{numberToLocalCurrency(data.price * data.qty)}</td>
+            <td>
+                <Button
+                    variant="danger"
+                    onClick={() => removeCashierDataOn(index)}
+                >
+                    -
+                </Button>
+            </td>
         </tr>
     );
 }
 
-function CashierTable({ cashierDatas, tax }) {
-
-    function getTotalPrice() {
-        let output = 0;
-        if (cashierDatas.length) {
-            cashierDatas.forEach((cashierData) => {
-                output += cashierData.qty * cashierData.price
-            });
-        }
-        return output;
-    }
+function CashierTable({ cashierDatas, removeCashierDataOn }) {
 
     return (
         <Row>
@@ -52,6 +50,7 @@ function CashierTable({ cashierDatas, tax }) {
                             <th>Jumlah</th>
                             <th>Harga Satuan</th>
                             <th>Sub Total</th>
+                            <th></th>
                         </tr>
                     </thead>
                     <tbody>
@@ -63,6 +62,7 @@ function CashierTable({ cashierDatas, tax }) {
                                             key={index}
                                             index={index}
                                             data={data}
+                                            removeCashierDataOn={removeCashierDataOn}
                                         />
                                     );
                                 }) : null
@@ -106,26 +106,22 @@ function AddModal({ show, handleClose, handleConfirmation, fee, staffs }) {
 
 
         if (!qty) {
-            console.log("A")
             window.alert("Tolong isi semua kolom yang kosong.");
             return;
         }
 
         if (fee) {
             if (fee.beautician && !beautician) {
-                console.log("B")
                 window.alert("Tolong isi semua kolom yang kosong.");
                 return;
             }
 
             if (fee.nurse && !nurse) {
-                console.log("C")
                 window.alert("Tolong isi semua kolom yang kosong.");
                 return;
             }
 
             if (fee.doctor && !doctor) {
-                console.log("D")
                 window.alert("Tolong isi semua kolom yang kosong.");
                 return;
             }
@@ -238,6 +234,57 @@ function AddModal({ show, handleClose, handleConfirmation, fee, staffs }) {
     );
 }
 
+function ReceiptContainer({ totalPrice, tax, addDataToDb }) {
+    return (
+        <Col md="4">
+            <Card className="shadow">
+                <CardHeader className="border-0">
+                    <h3 className="mb-0">Card tables</h3>
+                </CardHeader>
+                <Row>
+                    <Col>
+                        <Table className="align-items-center table-flush" responsive>
+                            <thead className="thead-light">
+                                <tr>
+                                    <th scope="col"></th>
+                                    <th scope="col">Biaya</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><b>Total :</b></td>
+                                    <td>{numberToLocalCurrency(totalPrice)}</td>
+                                </tr>
+                                <tr>
+                                    <td><b>Tax {tax} % :</b></td>
+                                    <td>{numberToLocalCurrency(totalPrice * (100 + tax) / 100)}</td>
+                                </tr>
+                            </tbody>
+                        </Table>
+                    </Col>
+                </Row>
+                <Button variant="primary" onClick={addDataToDb}>Submit</Button>
+            </Card>
+        </Col>
+    );
+}
+
+function CashierContainer({ cashierDatas, removeCashierDataOn }) {
+    return (
+        <Col md="8">
+            <Card className="shadow">
+                <CardHeader className="border-0">
+                    <h3 className="mb-0">Card tables</h3>
+                </CardHeader>
+                <CashierTable
+                    removeCashierDataOn={removeCashierDataOn}
+                    cashierDatas={cashierDatas}
+                />
+            </Card>
+        </Col>
+    );
+}
+
 export default () => {
 
     const [services, setServices] = useState([[]]);
@@ -249,17 +296,6 @@ export default () => {
 
     const [cashierDatas, setCashierDatas] = useState([]);
     const [tax, setTax] = useState(0);
-
-
-    function getTotalPrice() {
-        let output = 0;
-        if (cashierDatas.length) {
-            cashierDatas.forEach((cashierData) => {
-                output += cashierData.qty * cashierData.price
-            });
-        }
-        return output;
-    }
 
     useEffect(() => {
         const unsubscribeServices = firebaseApp.firestore()
@@ -294,7 +330,7 @@ export default () => {
                                 );
 
                             },
-                            name: "AAA"
+                            name: "+ Tambahkan"
                         }
 
                     ];
@@ -330,6 +366,22 @@ export default () => {
         }
     }, []);
 
+    function getTotalPrice() {
+        let output = 0;
+        if (cashierDatas.length) {
+            cashierDatas.forEach((cashierData) => {
+                output += cashierData.qty * cashierData.price
+            });
+        }
+        return output;
+    }
+
+    function removeCashierDataOn(index) {
+        let newCashierDatas = [...cashierDatas];
+        newCashierDatas.splice(index, 1);
+        setCashierDatas(newCashierDatas);
+    }
+
     function insertToCashierTable(qty, staff) {
         setShowAddModal(false);
         let dataToInsert = currAddData;
@@ -348,8 +400,6 @@ export default () => {
             .collection('clinics')
             .doc("GABRIEL")
             .collection("sales").doc();
-
-
 
         const salesDataToSave = {
             id: salesRef.id,
@@ -375,50 +425,17 @@ export default () => {
     return (
         <>
             <Row>
-                <Col md="8">
-                    <Card className="shadow">
-                        <CardHeader className="border-0">
-                            <h3 className="mb-0">Card tables</h3>
-                        </CardHeader>
-                        <CashierTable
-                            tax={tax}
-                            cashierDatas={cashierDatas}
-                        />
-                    </Card>
-                </Col>
+                <CashierContainer
+                    removeCashierDataOn={removeCashierDataOn}
+                    tax={tax}
+                    cashierDatas={cashierDatas}
+                />
 
-                <Col md="4">
-                    <Card className="shadow">
-                        <CardHeader className="border-0">
-                            <h3 className="mb-0">Card tables</h3>
-                        </CardHeader>
-                        <Row>
-                            <Col>
-                                <Table className="align-items-center table-flush" responsive>
-                                    <thead className="thead-light">
-                                        <tr>
-                                            <th scope="col"></th>
-                                            <th scope="col">Biaya</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <tr>
-                                            <td><b>Total :</b></td>
-                                            <td>{numberToLocalCurrency(getTotalPrice())}</td>
-                                        </tr>
-                                        <tr>
-                                            <td><b>Tax {tax} % :</b></td>
-                                            <td>{numberToLocalCurrency(getTotalPrice() * (100 + tax) / 100)}</td>
-                                        </tr>
-                                    </tbody>
-                                </Table>
-                            </Col>
-                        </Row>
-                        <Button variant="primary" onClick={addDataToDb}>
-                            Submit
-                        </Button>
-                    </Card>
-                </Col>
+                <ReceiptContainer
+                    totalPrice={getTotalPrice()}
+                    tax={tax}
+                    addDataToDb={addDataToDb}
+                />
             </Row>
 
             <Row className="mt-3">
