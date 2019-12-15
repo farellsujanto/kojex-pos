@@ -17,13 +17,27 @@ function numberToLocalCurrency(value) {
     return Number(value).toLocaleString('id');
 }
 
-function CashierTableRow({ index, data, removeCashierDataOn }) {
+function CashierTableRow({ index, data, removeCashierDataOn, setCashierDataDiscount }) {
     return (
         <tr>
             <td>{index + 1}</td>
             <td>{data.name}</td>
             <td>{Number(data.qty)}</td>
             <td>{numberToLocalCurrency(data.price)}</td>
+            <td>
+                <Form.Group>
+                    <Form.Control
+                        value={data.disc}
+                        type="number"
+                        onChange={(e) => {
+                            const value = e.target.value;
+                            if (value >= 0 && value <= 100) {
+                                setCashierDataDiscount(index, Number(value))
+                            }
+                        }}
+                    />
+                </Form.Group>
+            </td>
             <td>{numberToLocalCurrency(data.price * data.qty)}</td>
             <td>
                 <Button
@@ -37,7 +51,7 @@ function CashierTableRow({ index, data, removeCashierDataOn }) {
     );
 }
 
-function CashierTable({ cashierDatas, removeCashierDataOn }) {
+function CashierTable({ cashierDatas, removeCashierDataOn, setCashierDataDiscount }) {
 
     return (
         <Row>
@@ -49,6 +63,7 @@ function CashierTable({ cashierDatas, removeCashierDataOn }) {
                             <th>Barang</th>
                             <th>Jumlah</th>
                             <th>Harga Satuan</th>
+                            <th>Diskon</th>
                             <th>Sub Total</th>
                             <th></th>
                         </tr>
@@ -63,6 +78,7 @@ function CashierTable({ cashierDatas, removeCashierDataOn }) {
                                             index={index}
                                             data={data}
                                             removeCashierDataOn={removeCashierDataOn}
+                                            setCashierDataDiscount={setCashierDataDiscount}
                                         />
                                     );
                                 }) : null
@@ -86,7 +102,11 @@ function AddModal({ show, handleClose, handleConfirmation, fee, staffs }) {
         let output = [];
         if (staffs.length) {
             staffs.forEach((staff) => {
-                if (staff.role === role) {
+                if (
+                    staff.role === role ||
+                    ((staff.role === 'beautician') && (role === 'nurse')) ||
+                    ((staff.role === 'nurse') && (role === 'beautician'))
+                ) {
                     output.push(staff.name);
                 }
             });
@@ -183,7 +203,6 @@ function AddModal({ show, handleClose, handleConfirmation, fee, staffs }) {
                             onChange={(e) => setQty(e.target.value)}
                         />
                     </Col>
-
                 </Form.Group>
                 {
                     fee ? (
@@ -234,7 +253,12 @@ function AddModal({ show, handleClose, handleConfirmation, fee, staffs }) {
     );
 }
 
-function ReceiptContainer({ totalPrice, tax, addDataToDb }) {
+function ReceiptContainer({ totalPrice, tax, addDataToDb, totalCut }) {
+
+    function calculateTax(price) {
+        return tax === 0 ? 0 : (price * tax / 100);
+    }
+
     return (
         <Col md="4">
             <Card className="shadow">
@@ -252,12 +276,20 @@ function ReceiptContainer({ totalPrice, tax, addDataToDb }) {
                             </thead>
                             <tbody>
                                 <tr>
-                                    <td><b>Total :</b></td>
+                                    <td><b>Total Harga :</b></td>
                                     <td>{numberToLocalCurrency(totalPrice)}</td>
                                 </tr>
                                 <tr>
+                                    <td><b>Total Potongan :</b></td>
+                                    <td>{numberToLocalCurrency(totalCut)}</td>
+                                </tr>
+                                <tr>
                                     <td><b>Tax {tax} % :</b></td>
-                                    <td>{numberToLocalCurrency(totalPrice * (100 + tax) / 100)}</td>
+                                    <td>{numberToLocalCurrency(calculateTax((totalPrice - totalCut)))}</td>
+                                </tr>
+                                <tr>
+                                    <td><b>Biaya Yang Harus Dibayar :</b></td>
+                                    <td>{numberToLocalCurrency(totalPrice - totalCut + calculateTax((totalPrice - totalCut)))}</td>
                                 </tr>
                             </tbody>
                         </Table>
@@ -269,7 +301,7 @@ function ReceiptContainer({ totalPrice, tax, addDataToDb }) {
     );
 }
 
-function CashierContainer({ cashierDatas, removeCashierDataOn }) {
+function CashierContainer({ cashierDatas, removeCashierDataOn, setCashierDataDiscount }) {
     return (
         <Col md="8">
             <Card className="shadow">
@@ -279,6 +311,7 @@ function CashierContainer({ cashierDatas, removeCashierDataOn }) {
                 <CashierTable
                     removeCashierDataOn={removeCashierDataOn}
                     cashierDatas={cashierDatas}
+                    setCashierDataDiscount={setCashierDataDiscount}
                 />
             </Card>
         </Col>
@@ -376,6 +409,16 @@ export default () => {
         return output;
     }
 
+    function getTotalCut() {
+        let output = 0;
+        if (cashierDatas.length) {
+            cashierDatas.forEach((cashierData) => {
+                output += (cashierData.qty * cashierData.price)  * cashierData.disc / 100;
+            });
+        }
+        return output;
+    }
+
     function removeCashierDataOn(index) {
         let newCashierDatas = [...cashierDatas];
         newCashierDatas.splice(index, 1);
@@ -386,8 +429,15 @@ export default () => {
         setShowAddModal(false);
         let dataToInsert = currAddData;
         dataToInsert.qty = qty;
+        dataToInsert.disc = 0;
         dataToInsert.staff = staff;
         setCashierDatas([...cashierDatas, dataToInsert]);
+    }
+
+    function setCashierDataDiscount(index, disc) {
+        let newCashierDatas = [...cashierDatas];
+        newCashierDatas[index].disc = disc;
+        setCashierDatas(newCashierDatas);
     }
 
     function addDataToDb() {
@@ -429,10 +479,12 @@ export default () => {
                     removeCashierDataOn={removeCashierDataOn}
                     tax={tax}
                     cashierDatas={cashierDatas}
+                    setCashierDataDiscount={setCashierDataDiscount}
                 />
 
                 <ReceiptContainer
                     totalPrice={getTotalPrice()}
+                    totalCut={getTotalCut()}
                     tax={tax}
                     addDataToDb={addDataToDb}
                 />
