@@ -38,7 +38,7 @@ function prepareAuthPage(children) {
 function getLoggedInPath(path) {
 	switch (path) {
 		case '/':
-			return <HomePage />
+			return <CashierPage />
 		case '/cashier':
 			return <CashierPage />
 		default:

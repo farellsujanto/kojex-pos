@@ -1,4 +1,5 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
+import ReactToPrint from 'react-to-print';
 
 import { firebaseApp } from '../utils/Firebase';
 
@@ -15,6 +16,10 @@ import {
 
 function numberToLocalCurrency(value) {
     return Number(value).toLocaleString('id');
+}
+
+function calculateTax(price, tax) {
+    return tax === 0 ? 0 : (price * tax / 100);
 }
 
 function CashierTableRow({ index, data, removeCashierDataOn, setCashierDataDiscount }) {
@@ -253,12 +258,7 @@ function AddModal({ show, handleClose, handleConfirmation, fee, staffs }) {
     );
 }
 
-function ReceiptContainer({ totalPrice, tax, addDataToDb, totalCut }) {
-
-    function calculateTax(price) {
-        return tax === 0 ? 0 : (price * tax / 100);
-    }
-
+function ReceiptContainer({ totalPrice, tax, showConfirmationModal, totalCut }) {
     return (
         <Col md="4">
             <Card className="shadow">
@@ -285,17 +285,17 @@ function ReceiptContainer({ totalPrice, tax, addDataToDb, totalCut }) {
                                 </tr>
                                 <tr>
                                     <td><b>Tax {tax} % :</b></td>
-                                    <td>{numberToLocalCurrency(calculateTax((totalPrice - totalCut)))}</td>
+                                    <td>{numberToLocalCurrency(calculateTax((totalPrice - totalCut), tax))}</td>
                                 </tr>
                                 <tr>
                                     <td><b>Biaya Yang Harus Dibayar :</b></td>
-                                    <td>{numberToLocalCurrency(totalPrice - totalCut + calculateTax((totalPrice - totalCut)))}</td>
+                                    <td>{numberToLocalCurrency(totalPrice - totalCut + calculateTax((totalPrice - totalCut), tax))}</td>
                                 </tr>
                             </tbody>
                         </Table>
                     </Col>
                 </Row>
-                <Button variant="primary" onClick={addDataToDb}>Submit</Button>
+                <Button variant="primary" onClick={showConfirmationModal}>Submit</Button>
             </Card>
         </Col>
     );
@@ -318,6 +318,166 @@ function CashierContainer({ cashierDatas, removeCashierDataOn, setCashierDataDis
     );
 }
 
+function CashierTableRowToPrint({ index, data }) {
+    return (
+        <tr>
+            <td>{index + 1}</td>
+            <td>{data.name}</td>
+            <td>{Number(data.qty)}</td>
+            <td>{numberToLocalCurrency(data.price)}</td>
+            <td>{numberToLocalCurrency(data.price * data.qty)}</td>
+        </tr>
+    );
+}
+
+function ComponentToPrint({ cashierDatas, totalPrice, tax, totalCut, docId }) {
+
+    function getDate() {
+        const today = new Date();
+        return today.getDate() + '-' + (Number(today.getMonth()) + 1) + '-' + today.getFullYear();
+    }
+
+    return (
+        <>
+            <Row>
+                <Col>
+                    {docId}
+                </Col>
+                <Col>
+                    Gabriel Dermaclinic
+                </Col>
+                <Col>
+                    {getDate()}
+                </Col>
+            </Row>
+
+            <Row>
+                <Col>
+                    <Table className="align-items-center table-flush" responsive>
+                        <thead className="thead-light">
+                            <tr>
+                                <th>#</th>
+                                <th>Barang</th>
+                                <th>Jumlah</th>
+                                <th>Harga Satuan</th>
+                                <th>Sub Total</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {
+                                cashierDatas ?
+                                    cashierDatas.map((data, index) => {
+                                        return (
+                                            <CashierTableRowToPrint
+                                                key={index}
+                                                index={index}
+                                                data={data}
+                                            />
+                                        );
+                                    }) : null
+                            }
+                        </tbody>
+                    </Table>
+                </Col>
+            </Row>
+            <Row>
+                <Col>
+                    <Table className="align-items-center table-flush" responsive>
+                        <thead className="thead-light">
+                            <tr>
+                                <th scope="col"></th>
+                                <th scope="col">Biaya</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><b>Total Harga :</b></td>
+                                <td>{numberToLocalCurrency(totalPrice)}</td>
+                            </tr>
+                            <tr>
+                                <td><b>Total Potongan :</b></td>
+                                <td>{numberToLocalCurrency(totalCut)}</td>
+                            </tr>
+                            {/* <tr>
+                                    <td><b>Tax {tax} % :</b></td>
+                                    <td>{numberToLocalCurrency(calculateTax((totalPrice - totalCut), tax))}</td>
+                                </tr> */}
+                            <tr>
+                                <td><b>Biaya Yang Harus Dibayar :</b></td>
+                                <td>{numberToLocalCurrency(totalPrice - totalCut + calculateTax((totalPrice - totalCut), tax))}</td>
+                            </tr>
+                        </tbody>
+                    </Table>
+                </Col>
+            </Row>
+            <Row di>
+                <Col>
+                    <hr class="w-25 float-right" style={{height: '3px'}}/>
+                </Col>
+            </Row>
+        </>
+    );
+}
+
+function ConfirmationModal({ show, handleClose, cashierDatas, totalPrice, totalCut, tax, processAddData, resetFormData }) {
+
+    const componentRef = useRef();
+    const [docId, setDocId] = useState('');
+    const [memberId, setMemberId] = useState(0);
+
+    useEffect(() => {
+        const salesRef = firebaseApp.firestore()
+            .collection('clinics')
+            .doc("GABRIEL")
+            .collection("sales").doc();
+        setDocId(salesRef.id);
+    }, [show]);
+
+    return (
+        <Modal show={show} onHide={handleClose}>
+            <Modal.Header closeButton>
+                <Modal.Title>Print</Modal.Title>
+            </Modal.Header>
+            <Modal.Body>
+
+                <Form.Group>
+                    <Form.Control
+                        value={memberId}
+                        type="number"
+                        onChange={(e) => setMemberId(Number(e.target.value))}
+                    />
+                </Form.Group>
+
+                <div style={{ display: 'none' }}>
+                    <div ref={componentRef}>
+                        <ComponentToPrint
+                            cashierDatas={cashierDatas}
+                            totalPrice={totalPrice}
+                            totalCut={totalCut}
+                            tax={tax}
+                            docId={docId}
+                        />
+                    </div>
+                </div>
+
+            </Modal.Body>
+            <Modal.Footer>
+                <Button variant="link" onClick={handleClose}>
+                    Close
+                </Button>
+                <ReactToPrint
+                    trigger={() => <Button>Print this out!</Button>}
+                    // onBeforeGetContent={() => processAddData(docId, memberId)}
+                    onAfterPrint={() => {
+                        resetFormData();
+                    }}
+                    content={() => componentRef.current}
+                />
+            </Modal.Footer>
+        </Modal>
+    );
+}
+
 export default () => {
 
     const [services, setServices] = useState([[]]);
@@ -326,9 +486,12 @@ export default () => {
     const [currAddData, setCurrAddData] = useState({});
 
     const [showAddModal, setShowAddModal] = useState(false);
+    const [showConfirmationModal, setShowConfirmationModal] = useState(false);
 
     const [cashierDatas, setCashierDatas] = useState([]);
     const [tax, setTax] = useState(0);
+
+
 
     useEffect(() => {
         const unsubscribeServices = firebaseApp.firestore()
@@ -399,6 +562,10 @@ export default () => {
         }
     }, []);
 
+    function resetFormData() {
+        setCashierDatas([]);
+    }
+
     function getTotalPrice() {
         let output = 0;
         if (cashierDatas.length) {
@@ -413,7 +580,7 @@ export default () => {
         let output = 0;
         if (cashierDatas.length) {
             cashierDatas.forEach((cashierData) => {
-                output += (cashierData.qty * cashierData.price)  * cashierData.disc / 100;
+                output += (cashierData.qty * cashierData.price) * cashierData.disc / 100;
             });
         }
         return output;
@@ -440,19 +607,21 @@ export default () => {
         setCashierDatas(newCashierDatas);
     }
 
-    function addDataToDb() {
+    function addDataToDb(docId, memberId) {
 
         const today = new Date();
-        const date = today.getDate() + '-' + today.getMonth() + '-' + today.getFullYear();
+        const date = today.getDate() + '-' + (Number(today.getMonth()) + 1) + '-' + today.getFullYear();
         const time = today.getHours() + ':' + today.getMinutes() + ':' + today.getSeconds();
 
         const salesRef = firebaseApp.firestore()
             .collection('clinics')
             .doc("GABRIEL")
-            .collection("sales").doc();
+            .collection("sales")
+            .doc(docId);
 
         const salesDataToSave = {
-            id: salesRef.id,
+            id: docId,
+            memberId: memberId,
             corrected: false,
             sales: cashierDatas,
             date: date,
@@ -460,13 +629,17 @@ export default () => {
             tax: tax
         }
 
-        salesRef.set(salesDataToSave)
-            .then(() => {
-                window.alert("Data Berhasil Ditambah");
-            })
-            .catch((e) => {
-                window.alert("Terjadi Kesalahan Silahkan Coba Lagi");
-            });
+        salesRef.set(salesDataToSave);
+        // .then(() => {
+        //     window.alert("Data Berhasil Ditambah");
+        // })
+        // .catch((e) => {
+        //     window.alert("Terjadi Kesalahan Silahkan Coba Lagi");
+        // });
+    }
+
+    function processAddData(docId, memberId) {
+        addDataToDb(docId, memberId);
     }
 
     const headers = ["#", "Nama", "Harga", "Beautician", "Dokter", "Perawat", "Keterangan", ""];
@@ -486,7 +659,7 @@ export default () => {
                     totalPrice={getTotalPrice()}
                     totalCut={getTotalCut()}
                     tax={tax}
-                    addDataToDb={addDataToDb}
+                    showConfirmationModal={() => setShowConfirmationModal(true)}
                 />
             </Row>
 
@@ -500,6 +673,16 @@ export default () => {
                     </Card>
                 </Col>
             </Row>
+            <ConfirmationModal
+                show={showConfirmationModal}
+                handleClose={() => setShowConfirmationModal(false)}
+                cashierDatas={cashierDatas}
+                totalPrice={getTotalPrice()}
+                totalCut={getTotalCut()}
+                tax={tax}
+                processAddData={processAddData}
+                resetFormData={resetFormData}
+            />
             <AddModal
                 show={showAddModal}
                 fee={currAddData.fee}
