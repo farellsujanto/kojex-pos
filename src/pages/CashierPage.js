@@ -338,11 +338,11 @@ function CashierTableRowToPrint({ index, data }) {
 
     return (
         <tr>
-            <td><strong style={{ fontSize: 20 }}>{index + 1}</strong></td>
-            <td><strong style={{ fontSize: 20 }}>{data.name + ' ' + getAllStaff()}</strong></td>
-            <td><strong style={{ fontSize: 20 }}>{Number(data.qty)}</strong></td>
-            <td><strong style={{ fontSize: 20 }}>{numberToLocalCurrency(data.price)}</strong></td>
-            <td><strong style={{ fontSize: 20 }}>{numberToLocalCurrency(data.price * data.qty)}</strong></td>
+            <td><strong style={{ fontSize: 20, fontFamily: 'tahoma', color: 'black'  }}>{index + 1}</strong></td>
+            <td><strong style={{ fontSize: 20, fontFamily: 'tahoma', color: 'black'  }}>{data.name + ' ' + getAllStaff()}</strong></td>
+            <td><strong style={{ fontSize: 20, fontFamily: 'tahoma', color: 'black'  }}>{Number(data.qty)}</strong></td>
+            <td><strong style={{ fontSize: 20, fontFamily: 'tahoma', color: 'black'  }}>{numberToLocalCurrency(data.price)}</strong></td>
+            <td><strong style={{ fontSize: 20, fontFamily: 'tahoma', color: 'black'  }}>{numberToLocalCurrency(data.price * data.qty)}</strong></td>
         </tr>
     );
 }
@@ -386,9 +386,9 @@ function ComponentToPrint({ cashierDatas, totalPrice, tax, totalCut, docId }) {
                 <Col>
                     <Table className="align-items-center table-flush" responsive >
                         <thead className="thead-light">
-                            <tr style={{ fontSize: 20, fontFamily: 'tahoma', border: '2px solid black' }}>
+                            <tr style={{ fontSize: 20, fontFamily: 'tahoma', color: 'black', border: '2px solid black' }}>
                                 <th></th>
-                                <th style={{ border: '2px solid black' }}><strong>Barang</strong></th>
+                                <th style={{ border: '2px solid black' }}><strong>Jasa</strong></th>
                                 <th style={{ border: '2px solid black' }}><strong>Jumlah</strong></th>
                                 <th style={{ border: '2px solid black' }}><strong>Harga Satuan</strong></th>
                                 <th style={{ border: '2px solid black' }}><strong>Sub Total</strong></th>
@@ -422,20 +422,20 @@ function ComponentToPrint({ cashierDatas, totalPrice, tax, totalCut, docId }) {
                         </thead>
                         <tbody>
                             <tr style={{ fontSize: 20, fontFamily: 'tahoma', border: '2px solid black' }}>
-                                <td><strong style={{ fontSize: 20, fontFamily: 'tahoma' }}>Total Harga :</strong></td>
-                                <td><strong style={{ fontSize: 20, fontFamily: 'tahoma' }}>{numberToLocalCurrency(totalPrice)}</strong></td>
+                                <td><strong style={{ fontSize: 20, fontFamily: 'tahoma', color: 'black' }}>Total Harga :</strong></td>
+                                <td><strong style={{ fontSize: 20, fontFamily: 'tahoma', color: 'black' }}>{numberToLocalCurrency(totalPrice)}</strong></td>
                             </tr>
                             <tr style={{ fontSize: 20, fontFamily: 'tahoma', border: '2px solid black' }}>
-                                <td><strong style={{ fontSize: 20, fontFamily: 'tahoma' }}>Total Potongan :</strong></td>
-                                <td><strong style={{ fontSize: 20, fontFamily: 'tahoma' }}>{numberToLocalCurrency(totalCut)}</strong></td>
+                                <td><strong style={{ fontSize: 20, fontFamily: 'tahoma', color: 'black' }}>Total Potongan :</strong></td>
+                                <td><strong style={{ fontSize: 20, fontFamily: 'tahoma', color: 'black' }}>{numberToLocalCurrency(totalCut)}</strong></td>
                             </tr>
                             {/* <tr>
                                     <td><b>Tax {tax} % :</b></td>
                                     <td>{numberToLocalCurrency(calculateTax((totalPrice - totalCut), tax))}</td>
                                 </tr> */}
                             <tr style={{ fontSize: 20, fontFamily: 'tahoma', border: '2px solid black' }}>
-                                <td><strong style={{ fontSize: 20, fontFamily: 'tahoma' }}>Biaya Yang Harus Dibayar :</strong></td>
-                                <td><strong style={{ fontSize: 20, fontFamily: 'tahoma' }}>{numberToLocalCurrency(totalPrice - totalCut + calculateTax((totalPrice - totalCut), tax))}</strong></td>
+                                <td><strong style={{ fontSize: 20, fontFamily: 'tahoma', color: 'black' }}>Biaya Yang Harus Dibayar :</strong></td>
+                                <td><strong style={{ fontSize: 20, fontFamily: 'tahoma', color: 'black' }}>{numberToLocalCurrency(totalPrice - totalCut + calculateTax((totalPrice - totalCut), tax))}</strong></td>
                             </tr>
                         </tbody>
                     </Table>
@@ -769,6 +769,11 @@ export default () => {
         }
 
         salesRef.set(salesDataToSave);
+
+        setTimeout(() => {
+            window.alert("Input Berhasil");
+            resetFormData();
+        }, 1000)
         // .then(() => {
         //     window.alert("Data Berhasil Ditambah");
         // })
