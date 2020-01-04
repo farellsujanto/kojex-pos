@@ -57,7 +57,7 @@
   box-sizing: border-box; }
 
 html {
-  font-family: sans-serif;
+  font-family: 'Rubik', sans-serif;
   line-height: 1.15;
   -webkit-text-size-adjust: 100%;
   -ms-text-size-adjust: 100%;
@@ -72,7 +72,7 @@ article, aside, figcaption, figure, footer, header, hgroup, main, nav, section {
 
 body {
   margin: 0;
-  font-family: Open Sans, sans-serif;
+  font-family: 'Rubik', sans-serif;
   font-size: 1rem;
   font-weight: 400;
   line-height: 1.5;
@@ -10732,13 +10732,13 @@ textarea[resize="horizontal"] {
     padding-left: 1rem;
     width: calc(100% - 3rem - 1); }
 
-.icon-xl {
+/* .icon-xl {
   width: 5rem;
   height: 5rem; }
   .icon-xl i, .icon-xl svg {
     font-size: 4.25rem; }
   .icon-xl + .icon-text {
-    width: calc(100% - $icon-size-xl - 1); }
+    width: calc(100% - #{$icon-size-xl} - 1); }
 
 .icon-lg {
   width: 4rem;
@@ -10746,7 +10746,7 @@ textarea[resize="horizontal"] {
   .icon-lg i, .icon-lg svg {
     font-size: 3.25rem; }
   .icon-lg + .icon-text {
-    width: calc(100% - $icon-size-lg - 1); }
+    width: calc(100% - #{$icon-size-lg} - 1); }
 
 .icon-sm {
   width: 2rem;
@@ -10754,7 +10754,7 @@ textarea[resize="horizontal"] {
   .icon-sm i, .icon-sm svg {
     font-size: 1.25rem; }
   .icon-sm + .icon-text {
-    width: calc(100% - $icon-size-sm - 1); }
+    width: calc(100% - #{$icon-size-sm} - 1); } */
 
 .icon-shape {
   padding: 12px;

@@ -1,6 +1,6 @@
 import React, { useState, useContext } from 'react';
 
-import { AuthContext } from '../store/Context';
+import { AuthContext, RoleContext } from '../store/Context';
 
 import {
     Button,
@@ -23,9 +23,11 @@ export default () => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [, setAuth] = useContext(AuthContext);
+    const [, setRole] = useContext(RoleContext);
 
     function signIn() {
-        if (email === 'admin@admin.com' && password === 'adminadmin') {
+        if (password === 'gabrielclinic') {
+            setRole(email);
             setAuth(true);
         }
     }
@@ -52,7 +54,7 @@ export default () => {
                                                     <i className="ni ni-email-83" />
                                                 </InputGroupText>
                                             </InputGroupAddon>
-                                            <Input placeholder="Email" type="email" onChange={(e) => setEmail(e.target.value)} />
+                                            <Input placeholder="Username" onChange={(e) => setEmail(e.target.value)} />
                                         </InputGroup>
                                     </FormGroup>
                                     <FormGroup>

@@ -45,6 +45,9 @@ function TableRow({ datas, suffix, rowIndex }) {
             {
                 datas ?
                     datas.map((data, index) => {
+                        if(index === 3 || index === 4 || index === 5) {
+                            return null;
+                        }
                         if (suffix[index] === "CURR") {
                             return (<td key={index}>{formatNumber(Number(data))}</td>);
                         }
