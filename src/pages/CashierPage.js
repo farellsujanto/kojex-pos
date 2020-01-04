@@ -1,7 +1,9 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useContext } from 'react';
 import ReactToPrint from 'react-to-print';
 
 import { firebaseApp } from '../utils/Firebase';
+
+import { RoleContext } from '../store/Context';
 
 import DataTables from '../components/DataTables';
 
@@ -516,7 +518,7 @@ function ConfirmationModal({ show, handleClose, cashierDatas, totalPrice, totalC
                     pageStyle="@page { size: 1.5in 2in}"
                     onAfterPrint={() => {
                         // resetFormData();
-                        moveToPayment();
+                        moveToPayment(docId);
                     }}
                     content={() => componentRef.current}
                 />
@@ -525,16 +527,24 @@ function ConfirmationModal({ show, handleClose, cashierDatas, totalPrice, totalC
     );
 }
 
-function PaymentModal({ show, handleClose, totalPrice, totalCut, tax }) {
+function PaymentModal({ show, handleClose, totalPrice, totalCut, tax, handleConfirmation }) {
 
     const PAYMENT_METHOD = ["Cash", "EDC"];
 
     const [amountPaid, setAmountPaid] = useState(0);
     const [paymentMethod, setPaymentMethod] = useState('');
 
-    useEffect(() => {
+    function calculateTotalPrice() {
+        return totalPrice - totalCut + calculateTax((totalPrice - totalCut), tax);
+    }
 
-    }, [show]);
+    function confirmPayment() {
+        if (amountPaid >= calculateTotalPrice() || paymentMethod !== "Cash") {
+            handleConfirmation(amountPaid, paymentMethod);
+        } else {
+            window.alert("Biaya lebih besar dari uang yang diberikan.")
+        }
+    }
 
     return (
         <Modal show={show} onHide={handleClose}>
@@ -562,21 +572,28 @@ function PaymentModal({ show, handleClose, totalPrice, totalCut, tax }) {
                     <Form.Control value={paymentMethod} readOnly />
                 </InputGroup>
                 <Row>
-                    <Col>Jumlah Yang Harus Dibayar:</Col>
-                    <Col>{numberToLocalCurrency(totalPrice - totalCut + calculateTax((totalPrice - totalCut), tax))}</Col>
+                    <Col><b>Jumlah Yang Harus Dibayar :</b></Col>
+                    <Col>{numberToLocalCurrency(calculateTotalPrice())}</Col>
                 </Row>
+                <br />
 
                 {
                     paymentMethod === 'Cash' ?
                         (
-                            <Form.Group>
-                                <Form.Label>Jumlah Yang Dibayarkan</Form.Label>
-                                <Form.Control
-                                    value={amountPaid}
-                                    type="number"
-                                    onChange={(e) => setAmountPaid(Number(e.target.value))}
-                                />
-                            </Form.Group>
+                            <>
+                                <Form.Group>
+                                    <Form.Label><b>Jumlah Yang Dibayarkan</b></Form.Label>
+                                    <Form.Control
+                                        value={amountPaid}
+                                        type="number"
+                                        onChange={(e) => setAmountPaid(Number(e.target.value))}
+                                    />
+                                </Form.Group>
+                                <Row>
+                                    <Col><b>Kembalian :</b></Col>
+                                    <Col>{amountPaid > calculateTotalPrice() ? numberToLocalCurrency(amountPaid - calculateTotalPrice()) : "Tidak Ada Kembalian"}</Col>
+                                </Row>
+                            </>
                         ) : null
                 }
 
@@ -586,7 +603,7 @@ function PaymentModal({ show, handleClose, totalPrice, totalCut, tax }) {
                 <Button variant="link" onClick={handleClose}>
                     Close
                 </Button>
-                <Button variant="primary" onClick={handleClose}>
+                <Button variant="primary" onClick={confirmPayment}>
                     Submit
                 </Button>
             </Modal.Footer>
@@ -595,6 +612,8 @@ function PaymentModal({ show, handleClose, totalPrice, totalCut, tax }) {
 }
 
 export default () => {
+
+    const [role] = useContext(RoleContext);
 
     const [services, setServices] = useState([[]]);
     const [staffs, setStaffs] = useState([[]]);
@@ -607,6 +626,8 @@ export default () => {
 
     const [cashierDatas, setCashierDatas] = useState([]);
     const [tax, setTax] = useState(0);
+
+    const [currentDoc, setCurrentDoc] = useState('');
 
     useEffect(() => {
         const unsubscribeServices = firebaseApp.firestore()
@@ -722,7 +743,7 @@ export default () => {
         setCashierDatas(newCashierDatas);
     }
 
-    function addDataToDb(docId, memberId) {
+    function addDataToDb(memberId, amountPaid, paymentMethod) {
 
         const today = new Date();
         const date = today.getDate() + '-' + (Number(today.getMonth()) + 1) + '-' + today.getFullYear();
@@ -732,11 +753,14 @@ export default () => {
             .collection('clinics')
             .doc("GABRIEL")
             .collection("sales")
-            .doc(docId);
+            .doc(currentDoc);
 
         const salesDataToSave = {
-            id: docId,
+            id: currentDoc,
+            user: role,
+            paymentMethod: paymentMethod,
             memberId: memberId,
+            amountPaid: amountPaid,
             corrected: false,
             sales: cashierDatas,
             date: date,
@@ -758,9 +782,16 @@ export default () => {
         setShowConfirmationModal(false);
     }
 
-    function moveToPayment() {
+    function moveToPayment(docId) {
         setShowConfirmationModal(false);
+        setCurrentDoc(docId);
         setShowPaymentModal(true);
+    }
+
+    function paymentSuccess(amountPaid, paymentMethod) {
+        setShowPaymentModal(false);
+        
+        addDataToDb(0, amountPaid, paymentMethod);
     }
 
     const headers = ["#", "Nama", "Harga", "Keterangan", ""];
@@ -818,6 +849,7 @@ export default () => {
                 totalPrice={getTotalPrice()}
                 totalCut={getTotalCut()}
                 tax={tax}
+                handleConfirmation={paymentSuccess}
             />
         </>
     );
