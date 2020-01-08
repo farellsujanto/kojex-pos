@@ -6,7 +6,7 @@ function AuthLayout({ children }) {
     return (
         <div className="main-content">
             <AuthNavbar />
-            <div className="header bg-gradient-info py-7 py-lg-8">
+            <div className="header py-7 py-lg-8" style={{background: 'linear-gradient(87deg, #11998e 0, #38ef7d 100%)'}}>
                 <div className="separator separator-bottom separator-skew zindex-100">
                     <svg
                         xmlns="http://www.w3.org/2000/svg"

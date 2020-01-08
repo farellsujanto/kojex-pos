@@ -24,7 +24,7 @@ class Header extends React.Component {
   render() {
     return (
       <>
-        <div className="header bg-gradient-info pb-8 pt-5 pt-md-8">
+        <div className="header pb-8 pt-5 pt-md-8" style={{background: 'linear-gradient(87deg, #11998e 0, #38ef7d 100%)'}}>
           <Container fluid>
             <div className="header-body">
               

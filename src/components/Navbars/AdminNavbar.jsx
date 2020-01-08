@@ -12,11 +12,17 @@ import {
   Media
 } from "reactstrap";
 
-import { RoleContext } from '../../store/Context';
+import { RoleContext, AuthContext } from '../../store/Context';
 
 function UserNavbar() {
 
-  const [role] = useContext(RoleContext);
+  const [role, setRole] = useContext(RoleContext);
+  const [, setAuth] = useContext(AuthContext);
+
+  function signOut() {
+    setRole('');
+    setAuth(false);
+  }
 
   return (
     <Nav className="align-items-center d-none d-md-flex" navbar>
@@ -38,7 +44,7 @@ function UserNavbar() {
           <DropdownItem className="noti-title" header tag="div">
             <h6 className="text-overflow m-0">Welcome!</h6>
           </DropdownItem>
-          <DropdownItem href="#pablo" onClick={() => { }}>
+          <DropdownItem onClick={signOut}>
             <i className="ni ni-user-run" />
             <span>Logout</span>
           </DropdownItem>

@@ -4,6 +4,7 @@ import ReactToPrint from 'react-to-print';
 import { firebaseApp } from '../utils/Firebase';
 
 import { RoleContext } from '../store/Context';
+import Logo from '../assets/img/logo.png';
 
 import DataTables from '../components/DataTables';
 
@@ -349,6 +350,8 @@ function CashierTableRowToPrint({ index, data }) {
 
 function ComponentToPrint({ cashierDatas, totalPrice, tax, totalCut, docId }) {
 
+    const [role] = useContext(RoleContext);
+
     function getDate() {
         const today = new Date();
         return today.getDate() + '-' + (Number(today.getMonth()) + 1) + '-' + today.getFullYear();
@@ -373,12 +376,12 @@ function ComponentToPrint({ cashierDatas, totalPrice, tax, totalCut, docId }) {
                 </Col>
 
                 <Col xs={6} className='text-right'>
-                    <img src={require('../assets/img/logo.jpg')} width='150px' className='ml-4'></img>
+                    <img src={Logo} width='150px' className='ml-4'></img>
                 </Col>
             </Row>
 
             <Row style={{ fontSize: 25, fontFamily: 'tahoma', color: 'black' }} className='mb-4'>
-                <Col xs={6}><strong>{docId}</strong></Col>
+                <Col xs={6}><strong>{docId} - {role}</strong></Col>
                 <Col xs={6} className='text-right'><strong>{getDate()}</strong></Col>
             </Row>
 
@@ -386,12 +389,12 @@ function ComponentToPrint({ cashierDatas, totalPrice, tax, totalCut, docId }) {
                 <Col>
                     <Table className="align-items-center table-flush" responsive >
                         <thead className="thead-light">
-                            <tr style={{ fontSize: 20, fontFamily: 'tahoma', color: 'black', border: '2px solid black' }}>
+                            <tr style={{ fontSize: 12, fontFamily: 'tahoma', color: 'black', border: '2px solid black' }}>
                                 <th></th>
-                                <th style={{ border: '2px solid black' }}><strong>Jasa</strong></th>
-                                <th style={{ border: '2px solid black' }}><strong>Jumlah</strong></th>
-                                <th style={{ border: '2px solid black' }}><strong>Harga Satuan</strong></th>
-                                <th style={{ border: '2px solid black' }}><strong>Sub Total</strong></th>
+                                <th style={{ fontSize: 12, fontFamily: 'tahoma', color: 'black', border: '2px solid black' }}><strong>Jasa</strong></th>
+                                <th style={{ fontSize: 12, fontFamily: 'tahoma', color: 'black', border: '2px solid black' }}><strong>Jumlah</strong></th>
+                                <th style={{ fontSize: 12, fontFamily: 'tahoma', color: 'black', border: '2px solid black' }}><strong>Harga Satuan</strong></th>
+                                <th style={{ fontSize: 12, fontFamily: 'tahoma', color: 'black', border: '2px solid black' }}><strong>Sub Total</strong></th>
                             </tr>
                         </thead>
                         <tbody>
@@ -456,9 +459,9 @@ function ComponentToPrint({ cashierDatas, totalPrice, tax, totalCut, docId }) {
             <Row className='mt-5' style={{ borderTop: '2px dotted black' }}>
                 <Col>
                     <h5 className='text-center'>
-                        Terima kasih atas Kunjungan Anda
+                        <strong>Terima kasih atas Kunjungan Anda</strong>
                         <br />
-                        <i>"Your Healthy Skin Solution"</i>
+                        <i><strong>"Your Healthy Skin Solution"</strong></i>
                     </h5>
                 </Col>
             </Row>
