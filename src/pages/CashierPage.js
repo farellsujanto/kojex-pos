@@ -7,6 +7,7 @@ import { RoleContext } from '../store/Context';
 import Logo from '../assets/img/logo.png';
 
 import DataTables from '../components/DataTables';
+import DataTables2 from '../components/DataTables2';
 
 import { Table, Modal, Form, Button, InputGroup, DropdownButton, Dropdown } from 'react-bootstrap';
 
@@ -131,8 +132,6 @@ function AddModal({ show, handleClose, handleConfirmation, fee, staffs }) {
     }
 
     function addData() {
-
-
         if (!qty) {
             window.alert("Tolong isi semua kolom yang kosong.");
             return;
@@ -339,18 +338,20 @@ function CashierTableRowToPrint({ index, data }) {
 
     return (
         <tr>
-            <td><strong style={{ fontSize: 20, fontFamily: 'tahoma', color: 'black'  }}>{index + 1}</strong></td>
-            <td><strong style={{ fontSize: 20, fontFamily: 'tahoma', color: 'black'  }}>{data.name + ' ' + getAllStaff()}</strong></td>
-            <td><strong style={{ fontSize: 20, fontFamily: 'tahoma', color: 'black'  }}>{Number(data.qty)}</strong></td>
-            <td><strong style={{ fontSize: 20, fontFamily: 'tahoma', color: 'black'  }}>{numberToLocalCurrency(data.price)}</strong></td>
-            <td><strong style={{ fontSize: 20, fontFamily: 'tahoma', color: 'black'  }}>{numberToLocalCurrency(data.price * data.qty)}</strong></td>
+            <td><strong style={{ fontSize: 12, fontFamily: 'tahoma', color: 'black' }}>{index + 1}</strong></td>
+            <td><strong style={{ fontSize: 15, fontFamily: 'tahoma', color: 'black' }}>{data.name}<br />{getAllStaff()}</strong></td>
+            <td><strong style={{ fontSize: 15, fontFamily: 'tahoma', color: 'black' }}>{Number(data.qty)}</strong></td>
+            <td><strong style={{ fontSize: 15, fontFamily: 'tahoma', color: 'black' }}>{numberToLocalCurrency(data.price)}</strong></td>
+            <td><strong style={{ fontSize: 15, fontFamily: 'tahoma', color: 'black' }}>{data.disc}%</strong></td>
+            <td><strong style={{ fontSize: 15, fontFamily: 'tahoma', color: 'black' }}>{numberToLocalCurrency(data.price * data.qty)}</strong></td>
         </tr>
     );
 }
 
-function ComponentToPrint({ cashierDatas, totalPrice, tax, totalCut, docId }) {
+function ComponentToPrint({ cashierDatas, totalPrice, tax, totalCut, docId, currPaid, currPayMeth }) {
 
     const [role] = useContext(RoleContext);
+    
 
     function getDate() {
         const today = new Date();
@@ -360,27 +361,27 @@ function ComponentToPrint({ cashierDatas, totalPrice, tax, totalCut, docId }) {
     return (
         <div>
             <Row className='mb-4'>
-                <Col xs={6}>
-                    <p style={{ fontSize: 20, fontFamily: 'tahoma', color: 'black' }}>
+
+                <Col xs={3}>
+                    <img src={Logo} width='100px' className='ml-4'></img>
+                </Col>
+
+                <Col xs={3}>
+                    <p style={{ fontSize: 15, fontFamily: 'tahoma', color: 'black' }}>
                         <strong>
-                            Jl.Tentara Pelajar 80
-                            <br />
-                            Semarang
+                            Jl.Tentara Pelajar 80, Semarang
                         </strong>
                     </p>
-                    <p style={{ fontSize: 20, fontFamily: 'tahoma', color: 'black' }}>
+                    <p style={{ fontSize: 15, fontFamily: 'tahoma', color: 'black' }}>
                         <strong>(024)76.42.42.42</strong>
                         <br />
                         <strong>08.222.365.9992</strong>
                     </p>
                 </Col>
 
-                <Col xs={6} className='text-right'>
-                    <img src={Logo} width='150px' className='ml-4'></img>
-                </Col>
             </Row>
 
-            <Row style={{ fontSize: 25, fontFamily: 'tahoma', color: 'black' }} className='mb-4'>
+            <Row style={{ fontSize: 12, fontFamily: 'tahoma', color: 'black' }} className='mb-4'>
                 <Col xs={6}><strong>{docId} - {role}</strong></Col>
                 <Col xs={6} className='text-right'><strong>{getDate()}</strong></Col>
             </Row>
@@ -389,11 +390,12 @@ function ComponentToPrint({ cashierDatas, totalPrice, tax, totalCut, docId }) {
                 <Col>
                     <Table className="align-items-center table-flush" responsive >
                         <thead className="thead-light">
-                            <tr style={{ fontSize: 12, fontFamily: 'tahoma', color: 'black', border: '2px solid black' }}>
+                            <tr style={{ olor: 'black', border: '2px solid black' }}>
                                 <th></th>
                                 <th style={{ fontSize: 12, fontFamily: 'tahoma', color: 'black', border: '2px solid black' }}><strong>Jasa</strong></th>
                                 <th style={{ fontSize: 12, fontFamily: 'tahoma', color: 'black', border: '2px solid black' }}><strong>Jumlah</strong></th>
                                 <th style={{ fontSize: 12, fontFamily: 'tahoma', color: 'black', border: '2px solid black' }}><strong>Harga Satuan</strong></th>
+                                <th style={{ fontSize: 12, fontFamily: 'tahoma', color: 'black', border: '2px solid black' }}><strong>Diskon</strong></th>
                                 <th style={{ fontSize: 12, fontFamily: 'tahoma', color: 'black', border: '2px solid black' }}><strong>Sub Total</strong></th>
                             </tr>
                         </thead>
@@ -401,13 +403,17 @@ function ComponentToPrint({ cashierDatas, totalPrice, tax, totalCut, docId }) {
                             {
                                 cashierDatas ?
                                     cashierDatas.map((data, index) => {
-                                        return (
-                                            <CashierTableRowToPrint
-                                                key={index}
-                                                index={index}
-                                                data={data}
-                                            />
-                                        );
+                                        if (!(data.staff.beautician === "" && data.staff.doctor === "" && data.staff.nurse === "")) {
+                                            return (
+                                                <CashierTableRowToPrint
+                                                    key={index}
+                                                    index={index}
+                                                    data={data}
+                                                />
+                                            );
+                                        }
+                                        return null;
+
                                     }) : null
                             }
                         </tbody>
@@ -416,36 +422,78 @@ function ComponentToPrint({ cashierDatas, totalPrice, tax, totalCut, docId }) {
             </Row>
             <Row>
                 <Col>
-                    <Table className="align-items-center table-flush" responsive>
+                    <Table className="align-items-center table-flush" responsive >
                         <thead className="thead-light">
-                            <tr style={{ fontSize: 20, fontFamily: 'tahoma', border: '2px solid black' }}>
-                                <th scope="col"></th>
-                                <th scope="col"><strong style={{ fontSize: 20, fontFamily: 'tahoma' }}>Biaya</strong></th>
+                            <tr style={{ olor: 'black', border: '2px solid black' }}>
+                                <th></th>
+                                <th style={{ fontSize: 12, fontFamily: 'tahoma', color: 'black', border: '2px solid black' }}><strong>Product</strong></th>
+                                <th style={{ fontSize: 12, fontFamily: 'tahoma', color: 'black', border: '2px solid black' }}><strong>Jumlah</strong></th>
+                                <th style={{ fontSize: 12, fontFamily: 'tahoma', color: 'black', border: '2px solid black' }}><strong>Harga Satuan</strong></th>
+                                <th style={{ fontSize: 12, fontFamily: 'tahoma', color: 'black', border: '2px solid black' }}><strong>Diskon</strong></th>
+                                <th style={{ fontSize: 12, fontFamily: 'tahoma', color: 'black', border: '2px solid black' }}><strong>Sub Total</strong></th>
                             </tr>
                         </thead>
                         <tbody>
-                            <tr style={{ fontSize: 20, fontFamily: 'tahoma', border: '2px solid black' }}>
-                                <td><strong style={{ fontSize: 20, fontFamily: 'tahoma', color: 'black' }}>Total Harga :</strong></td>
-                                <td><strong style={{ fontSize: 20, fontFamily: 'tahoma', color: 'black' }}>{numberToLocalCurrency(totalPrice)}</strong></td>
+                            {
+                                cashierDatas ?
+                                    cashierDatas.map((data, index) => {
+                                        if (data.staff.beautician === "" && data.staff.doctor === "" && data.staff.nurse === "") {
+                                            return (
+                                                <CashierTableRowToPrint
+                                                    key={index}
+                                                    index={index}
+                                                    data={data}
+                                                />
+                                            );
+                                        }
+                                        return null;
+
+                                    }) : null
+                            }
+                        </tbody>
+                    </Table>
+                </Col>
+            </Row>
+            <Row>
+                <Col xs={{ offset: 6, size: 6 }}>
+                    <table style={{ float: 'right' }}>
+                        <thead className="thead-light">
+                            <tr style={{ fontSize: 12, fontFamily: 'tahoma' }}>
+                                <th scope="col"></th>
+                                <th scope="col"><strong style={{ fontSize: 12, fontFamily: 'tahoma', color: 'black' }}>Biaya</strong></th>
                             </tr>
-                            <tr style={{ fontSize: 20, fontFamily: 'tahoma', border: '2px solid black' }}>
-                                <td><strong style={{ fontSize: 20, fontFamily: 'tahoma', color: 'black' }}>Total Potongan :</strong></td>
-                                <td><strong style={{ fontSize: 20, fontFamily: 'tahoma', color: 'black' }}>{numberToLocalCurrency(totalCut)}</strong></td>
+                        </thead>
+                        <tbody>
+                            <tr style={{ fontSize: 15, fontFamily: 'tahoma' }}>
+                                <td><strong style={{ fontSize: 12, fontFamily: 'tahoma', color: 'black' }}>Total Harga :</strong></td>
+                                <td><strong style={{ fontSize: 15, fontFamily: 'tahoma', color: 'black' }}>{numberToLocalCurrency(totalPrice)}</strong></td>
+                            </tr>
+                            <tr style={{ fontSize: 15, fontFamily: 'tahoma' }}>
+                                <td><strong style={{ fontSize: 12, fontFamily: 'tahoma', color: 'black' }}>Total Potongan :</strong></td>
+                                <td><strong style={{ fontSize: 15, fontFamily: 'tahoma', color: 'black' }}>{numberToLocalCurrency(totalCut)}</strong></td>
                             </tr>
                             {/* <tr>
                                     <td><b>Tax {tax} % :</b></td>
                                     <td>{numberToLocalCurrency(calculateTax((totalPrice - totalCut), tax))}</td>
                                 </tr> */}
-                            <tr style={{ fontSize: 20, fontFamily: 'tahoma', border: '2px solid black' }}>
-                                <td><strong style={{ fontSize: 20, fontFamily: 'tahoma', color: 'black' }}>Biaya Yang Harus Dibayar :</strong></td>
-                                <td><strong style={{ fontSize: 20, fontFamily: 'tahoma', color: 'black' }}>{numberToLocalCurrency(totalPrice - totalCut + calculateTax((totalPrice - totalCut), tax))}</strong></td>
+                            <tr style={{ fontSize: 15, fontFamily: 'tahoma' }}>
+                                <td><strong style={{ fontSize: 12, fontFamily: 'tahoma', color: 'black' }}>Biaya Yang Harus Dibayar :</strong></td>
+                                <td><strong style={{ fontSize: 15, fontFamily: 'tahoma', color: 'black' }}>{numberToLocalCurrency(totalPrice - totalCut + calculateTax((totalPrice - totalCut), tax))}</strong></td>
+                            </tr>
+                            <tr style={{ fontSize: 15, fontFamily: 'tahoma' }}>
+                                <td><strong style={{ fontSize: 12, fontFamily: 'tahoma', color: 'black' }}>Biaya Yang Dibayar : {currPayMeth}</strong></td>
+                                <td><strong style={{ fontSize: 15, fontFamily: 'tahoma', color: 'black' }}>{numberToLocalCurrency(currPaid)}</strong></td>
+                            </tr>
+                            <tr style={{ fontSize: 15, fontFamily: 'tahoma' }}>
+                                <td><strong style={{ fontSize: 12, fontFamily: 'tahoma', color: 'black' }}>Kembalian :</strong></td>
+                                <td><strong style={{ fontSize: 15, fontFamily: 'tahoma', color: 'black' }}>{currPayMeth === 'Cash' ? numberToLocalCurrency(currPaid - (totalPrice - totalCut + calculateTax((totalPrice - totalCut), tax))) : 0}</strong></td>
                             </tr>
                         </tbody>
-                    </Table>
+                    </table>
                 </Col>
             </Row>
 
-            <Row className='mt-5'>
+            <Row className='mt-1'>
                 <Col>
                     <div className="w-25 float-right">
                         <div style={{ padding: '60px 40px 0', borderBottom: '4px solid black' }}>
@@ -456,26 +504,29 @@ function ComponentToPrint({ cashierDatas, totalPrice, tax, totalCut, docId }) {
                 </Col>
             </Row>
 
-            <Row className='mt-5' style={{ borderTop: '2px dotted black' }}>
+            {/* <Row className='mt-5' style={{ borderTop: '2px dotted black' }}>
                 <Col>
                     <h5 className='text-center'>
-                        <strong>Terima kasih atas Kunjungan Anda</strong>
+                        <strong style={{ fontSize: 12, fontFamily: 'tahoma', color: 'black' }}>Terima kasih atas Kunjungan Anda</strong>
                         <br />
-                        <i><strong>"Your Healthy Skin Solution"</strong></i>
+                        <i><strong style={{ fontSize: 12, fontFamily: 'tahoma', color: 'black' }}>"Your Healthy Skin Solution"</strong></i>
                     </h5>
                 </Col>
-            </Row>
+            </Row> */}
         </div>
     );
 }
 
-function ConfirmationModal({ show, handleClose, cashierDatas, totalPrice, totalCut, tax, processAddData, resetFormData, moveToPayment }) {
+function ConfirmationModal({ show, handleClose, cashierDatas, totalPrice, totalCut, tax, currPaid, currPayMeth, moveToPayment }) {
 
     const componentRef = useRef();
     const [docId, setDocId] = useState('');
     const [memberId, setMemberId] = useState(0);
 
     useEffect(() => {
+
+        console.log(currPaid, currPayMeth)
+
         const salesRef = firebaseApp.firestore()
             .collection('clinics')
             .doc("GABRIEL")
@@ -506,6 +557,8 @@ function ConfirmationModal({ show, handleClose, cashierDatas, totalPrice, totalC
                             totalCut={totalCut}
                             tax={tax}
                             docId={docId}
+                            currPaid={currPaid}
+                            currPayMeth={currPayMeth}
                         />
                     </div>
                 </div>
@@ -619,6 +672,7 @@ export default () => {
     const [role] = useContext(RoleContext);
 
     const [services, setServices] = useState([[]]);
+    const [items, setItems] = useState([[]]);
     const [staffs, setStaffs] = useState([[]]);
 
     const [currAddData, setCurrAddData] = useState({});
@@ -632,7 +686,46 @@ export default () => {
 
     const [currentDoc, setCurrentDoc] = useState('');
 
+    const [currPaid, setCurrPaid] = useState(0);
+    const [currPayMeth, setCurrPayMeth] = useState('');
+
+    const [position, setPosition] = useState(0);
+
     useEffect(() => {
+        const unsubscribeItems = firebaseApp.firestore()
+            .collection('clinics')
+            .doc("GABRIEL")
+            .collection("items")
+            .onSnapshot((snapshot) => {
+                let newItems = [];
+                let index = 0;
+                snapshot.forEach((snap) => {
+                    const newItem = [
+                        ++index,
+                        snap.data().name,
+                        snap.data().size,
+                        snap.data().stock,
+                        snap.data().price,
+                        {
+                            fun: () => {
+                                setShowAddModal(true);
+                                setCurrAddData(
+                                    {
+                                        name: snap.data().name,
+                                        price: snap.data().price,
+                                        fee: {},
+                                    }
+                                );
+                            },
+                            name: "+ Tambahkan"
+                        }
+
+                    ];
+                    newItems.push(newItem);
+                });
+                setItems(newItems);
+            });
+
         const unsubscribeServices = firebaseApp.firestore()
             .collection('clinics')
             .doc("GABRIEL")
@@ -695,6 +788,7 @@ export default () => {
             });
 
         return () => {
+            unsubscribeItems();
             unsubscribeServices();
             unsubscribeTax();
             unsubscribeStaffs();
@@ -746,7 +840,7 @@ export default () => {
         setCashierDatas(newCashierDatas);
     }
 
-    function addDataToDb(memberId, amountPaid, paymentMethod) {
+    function addDataToDb(memberId, amountPaid, paymentMethod, doc) {
 
         const today = new Date();
         const date = today.getDate() + '-' + (Number(today.getMonth()) + 1) + '-' + today.getFullYear();
@@ -756,7 +850,7 @@ export default () => {
             .collection('clinics')
             .doc("GABRIEL")
             .collection("sales")
-            .doc(currentDoc);
+            .doc(doc);
 
         const salesDataToSave = {
             id: currentDoc,
@@ -776,13 +870,7 @@ export default () => {
         setTimeout(() => {
             window.alert("Input Berhasil");
             resetFormData();
-        }, 1000)
-        // .then(() => {
-        //     window.alert("Data Berhasil Ditambah");
-        // })
-        // .catch((e) => {
-        //     window.alert("Terjadi Kesalahan Silahkan Coba Lagi");
-        // });
+        }, 1000);
     }
 
     function processAddData(docId, memberId) {
@@ -792,18 +880,23 @@ export default () => {
 
     function moveToPayment(docId) {
         setShowConfirmationModal(false);
-        setCurrentDoc(docId);
-        setShowPaymentModal(true);
+        // setCurrentDoc(docId);
+        // setShowPaymentModal(true);
+        addDataToDb(0, currPaid, currPayMeth, docId);
     }
 
     function paymentSuccess(amountPaid, paymentMethod) {
+        setCurrPaid(amountPaid);
+        setCurrPayMeth(paymentMethod);
         setShowPaymentModal(false);
-        
-        addDataToDb(0, amountPaid, paymentMethod);
+        setShowConfirmationModal(true);
     }
 
     const headers = ["#", "Nama", "Harga", "Keterangan", ""];
     const suffix = ["", "", "CURR", " %", " %", " %", "", "FUN"];
+
+    const ITEM_HEADERS = ["#", "Nama", "Ukuran", "Stock", "Harga", ""];
+    const ITEM_SUFFIX = ["", "", "", " ", "CURR", "FUN"];
 
     return (
         <>
@@ -819,7 +912,7 @@ export default () => {
                     totalPrice={getTotalPrice()}
                     totalCut={getTotalCut()}
                     tax={tax}
-                    showConfirmationModal={() => setShowConfirmationModal(true)}
+                    showConfirmationModal={() => setShowPaymentModal(true)}
                 />
             </Row>
 
@@ -827,12 +920,45 @@ export default () => {
                 <Col>
                     <Card className="shadow">
                         <CardHeader className="border-0">
-                            <h3 className="mb-0">Jasa</h3>
+                            <h3 className="mb-0"></h3>
                         </CardHeader>
-                        <DataTables items={services} headers={headers} suffix={suffix} />
+                        <Row style={{alignItems: 'center', justifyContent: 'center'}}>
+                            <Button onClick={() => setPosition(0)}>Jasa</Button>
+                            <Button onClick={() => setPosition(1)} variant="success">Product</Button>
+                        </Row>
                     </Card>
                 </Col>
             </Row>
+
+            {
+                position === 0 ?
+                    (
+                        <Row className="mt-3">
+                            <Col>
+                                <Card className="shadow">
+                                    <CardHeader className="border-0">
+                                        <h3 className="mb-0">Jasa</h3>
+                                    </CardHeader>
+                                    <DataTables items={services} headers={headers} suffix={suffix} />
+                                </Card>
+                            </Col>
+                        </Row>
+                    ) :
+                    position === 1 ?
+                        (
+                            <Row className="mt-3">
+                                <Col>
+                                    <Card className="shadow">
+                                        <CardHeader className="border-0">
+                                            <h3 className="mb-0">Produk</h3>
+                                        </CardHeader>
+                                        <DataTables2 items={items} headers={ITEM_HEADERS} suffix={ITEM_SUFFIX} />
+                                    </Card>
+                                </Col>
+                            </Row>
+                        ) : null
+            }
+            
             <ConfirmationModal
                 show={showConfirmationModal}
                 handleClose={() => setShowConfirmationModal(false)}
@@ -843,6 +969,8 @@ export default () => {
                 processAddData={processAddData}
                 resetFormData={resetFormData}
                 moveToPayment={moveToPayment}
+                currPaid={currPaid}
+                currPayMeth={currPayMeth}
             />
             <AddModal
                 show={showAddModal}
