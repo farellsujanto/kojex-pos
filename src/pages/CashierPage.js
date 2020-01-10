@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef, useContext } from 'react';
 import ReactToPrint from 'react-to-print';
 
 import { firebaseApp } from '../utils/Firebase';
+import firebase from 'firebase/app';
 
 import { RoleContext } from '../store/Context';
 import Logo from '../assets/img/logo.png';
@@ -351,7 +352,7 @@ function CashierTableRowToPrint({ index, data }) {
 function ComponentToPrint({ cashierDatas, totalPrice, tax, totalCut, docId, currPaid, currPayMeth }) {
 
     const [role] = useContext(RoleContext);
-    
+
 
     function getDate() {
         const today = new Date();
@@ -711,6 +712,7 @@ export default () => {
                                 setShowAddModal(true);
                                 setCurrAddData(
                                     {
+                                        id: snap.id,
                                         name: snap.data().name,
                                         price: snap.data().price,
                                         fee: {},
@@ -747,6 +749,7 @@ export default () => {
                                 setShowAddModal(true);
                                 setCurrAddData(
                                     {
+                                        id: snap.id,
                                         name: snap.data().name,
                                         price: snap.data().price,
                                         fee: {
@@ -864,8 +867,31 @@ export default () => {
             time: time,
             tax: tax
         }
-
+        
         salesRef.set(salesDataToSave);
+
+        cashierDatas.forEach((cashierData) => {
+            if (
+                cashierData.staff.beautician === '' &&
+                cashierData.staff.nurse === '' &&
+                cashierData.staff.doctor === ''
+            ) {
+
+                const id = cashierData.id;
+                const qty = cashierData.qty;
+
+                const itemRef = firebaseApp.firestore()
+                    .collection('clinics')
+                    .doc('GABRIEL')
+                    .collection('items')
+                    .doc(id);
+
+
+                const stat = firebase.firestore.FieldValue.increment(-qty);
+
+                itemRef.update({ stock: stat });
+            }
+        });
 
         setTimeout(() => {
             window.alert("Input Berhasil");
@@ -922,7 +948,7 @@ export default () => {
                         <CardHeader className="border-0">
                             <h3 className="mb-0"></h3>
                         </CardHeader>
-                        <Row style={{alignItems: 'center', justifyContent: 'center'}}>
+                        <Row style={{ alignItems: 'center', justifyContent: 'center' }}>
                             <Button onClick={() => setPosition(0)}>Jasa</Button>
                             <Button onClick={() => setPosition(1)} variant="success">Product</Button>
                         </Row>
@@ -958,7 +984,7 @@ export default () => {
                             </Row>
                         ) : null
             }
-            
+
             <ConfirmationModal
                 show={showConfirmationModal}
                 handleClose={() => setShowConfirmationModal(false)}
