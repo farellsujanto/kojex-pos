@@ -9,6 +9,7 @@ import Logo from '../assets/img/logo.png';
 
 import DataTables from '../components/DataTables';
 import DataTables2 from '../components/DataTables2';
+import DataTables3 from '../components/DataTables3';
 
 import { Table, Modal, Form, Button, InputGroup, DropdownButton, Dropdown } from 'react-bootstrap';
 
@@ -525,9 +526,6 @@ function ConfirmationModal({ show, handleClose, cashierDatas, totalPrice, totalC
     const [memberId, setMemberId] = useState(0);
 
     useEffect(() => {
-
-        console.log(currPaid, currPayMeth)
-
         const salesRef = firebaseApp.firestore()
             .collection('clinics')
             .doc("GABRIEL")
@@ -676,6 +674,7 @@ export default () => {
 
     const [services, setServices] = useState([[]]);
     const [items, setItems] = useState([[]]);
+    const [packages, setPackages] = useState([[]])
     const [staffs, setStaffs] = useState([[]]);
 
     const [currAddData, setCurrAddData] = useState({});
@@ -772,6 +771,42 @@ export default () => {
                 setServices(newServices);
             });
 
+        const unsubscribePackages = firebaseApp.firestore()
+            .collection('clinics')
+            .doc("GABRIEL")
+            .collection("packages")
+            .onSnapshot((snapshot) => {
+                let newPackages = [];
+                let index = 0;
+                snapshot.forEach((snap) => {
+                    const newPackage = [
+                        ++index,
+                        snap.data().name,
+                        snap.data().price,
+                        snap.data().items,
+                        {
+                            fun: () => {
+                                setShowAddModal(true);
+                                setCurrAddData(
+                                    {
+                                        id: snap.id,
+                                        name: snap.data().name,
+                                        price: snap.data().price,
+                                        fee: {},
+                                        items: snap.data().items
+                                    }
+                                );
+
+                            },
+                            name: "+ Tambahkan"
+                        }
+
+                    ];
+                    newPackages.push(newPackage);
+                });
+                setPackages(newPackages);
+            });
+
         const unsubscribeTax = firebaseApp.firestore()
             .collection('clinics')
             .doc("GABRIEL")
@@ -797,6 +832,7 @@ export default () => {
             unsubscribeServices();
             unsubscribeTax();
             unsubscribeStaffs();
+            unsubscribePackages();
         }
     }, []);
 
@@ -869,11 +905,28 @@ export default () => {
             time: time,
             tax: tax
         }
-        
+
         salesRef.set(salesDataToSave);
 
         cashierDatas.forEach((cashierData) => {
-            if (
+            console.log(cashierData)
+            if (cashierData.items) {
+                console.log(cashierData.items)
+                cashierData.items.forEach((item) => {
+
+                    const id = item.id;
+                    const qty = item.qty;
+
+                    const itemRef = firebaseApp.firestore()
+                        .collection('clinics')
+                        .doc('GABRIEL')
+                        .collection('items')
+                        .doc(id);
+
+                    const stat = firebase.firestore.FieldValue.increment(-qty);
+                    itemRef.update({ stock: stat });
+                })
+            } else if (
                 cashierData.staff.beautician === '' &&
                 cashierData.staff.nurse === '' &&
                 cashierData.staff.doctor === ''
@@ -926,6 +979,9 @@ export default () => {
     const ITEM_HEADERS = ["#", "Nama", "Ukuran", "Stock", "Harga", ""];
     const ITEM_SUFFIX = ["", "", "", " ", "CURR", "FUN"];
 
+    const PACKAGES_HEADERS = ["#", "Nama", "Harga", ""];
+    const PACKAGES_SUFFIX = ["", "", "CURR", "", "FUN"];
+
     return (
         <>
             <Row>
@@ -953,6 +1009,7 @@ export default () => {
                         <Row style={{ alignItems: 'center', justifyContent: 'center' }}>
                             <Button onClick={() => setPosition(0)}>Jasa</Button>
                             <Button onClick={() => setPosition(1)} variant="success">Product</Button>
+                            <Button onClick={() => setPosition(2)} variant="success">Paket</Button>
                         </Row>
                     </Card>
                 </Col>
@@ -984,7 +1041,20 @@ export default () => {
                                     </Card>
                                 </Col>
                             </Row>
-                        ) : null
+                        ) :
+                        position === 2 ?
+                            (
+                                <Row className="mt-3">
+                                    <Col>
+                                        <Card className="shadow">
+                                            <CardHeader className="border-0">
+                                                <h3 className="mb-0">Paket</h3>
+                                            </CardHeader>
+                                            <DataTables3 items={packages} headers={PACKAGES_HEADERS} suffix={PACKAGES_SUFFIX} />
+                                        </Card>
+                                    </Col>
+                                </Row>
+                            ) : null
             }
 
             <ConfirmationModal
