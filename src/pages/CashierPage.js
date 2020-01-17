@@ -572,7 +572,7 @@ function ConfirmationModal({ show, handleClose, cashierDatas, totalPrice, totalC
                 <ReactToPrint
                     trigger={() => <Button>Print this out!</Button>}
                     // onBeforeGetContent={() => processAddData(docId, memberId)}
-                    pageStyle="@page { size: 1.5in 2in}"
+                    // pageStyle="@page { size: 1.5in 2in}"
                     onAfterPrint={() => {
                         // resetFormData();
                         moveToPayment(docId);
@@ -597,6 +597,8 @@ function PaymentModal({ show, handleClose, totalPrice, totalCut, tax, handleConf
 
     function confirmPayment() {
         if (amountPaid >= calculateTotalPrice() || paymentMethod !== "Cash") {
+            setAmountPaid(0);
+            setPaymentMethod('');
             handleConfirmation(amountPaid, paymentMethod);
         } else {
             window.alert("Biaya lebih besar dari uang yang diberikan.")
