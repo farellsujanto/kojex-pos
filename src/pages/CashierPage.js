@@ -909,9 +909,7 @@ export default () => {
         salesRef.set(salesDataToSave);
 
         cashierDatas.forEach((cashierData) => {
-            console.log(cashierData)
             if (cashierData.items) {
-                console.log(cashierData.items)
                 cashierData.items.forEach((item) => {
 
                     const id = item.id;
@@ -977,10 +975,10 @@ export default () => {
     const suffix = ["", "", "CURR", " %", " %", " %", "", "FUN"];
 
     const ITEM_HEADERS = ["#", "Nama", "Ukuran", "Stock", "Harga", ""];
-    const ITEM_SUFFIX = ["", "", "", " ", "CURR", "FUN"];
+    const ITEM_SUFFIX = ["", "", "", "", "CURR", "FUN"];
 
-    const PACKAGES_HEADERS = ["#", "Nama", "Harga", ""];
-    const PACKAGES_SUFFIX = ["", "", "CURR", "", "FUN"];
+    const PACKAGES_HEADERS = ["#", "Nama", "Harga", "Isi Paket", ""];
+    const PACKAGES_SUFFIX = ["", "", "CURR", "ARR", "FUN"];
 
     return (
         <>

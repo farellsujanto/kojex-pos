@@ -40,13 +40,24 @@ function TableRow({ datas, suffix, rowIndex }) {
         return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
     }
 
+    function mapArray(arr) {
+        let output = [];
+
+        arr.forEach((data) => {
+            output.push(data.qty + ' Unit ' + data.name);
+            output.push(<br/>);
+        })
+
+        return output;
+    }
+
     return (
         <tr>
             {
                 datas ?
                     datas.map((data, index) => {
-                        if(index === 3) {
-                            return null;
+                        if(suffix[index] === "ARR") {
+                            return (<td key={index}>{mapArray(data)}</td>);
                         }
                         if (suffix[index] === "CURR") {
                             return (<td key={index}>{formatNumber(Number(data))}</td>);
