@@ -584,7 +584,7 @@ function ConfirmationModal({ show, handleClose, cashierDatas, totalPrice, totalC
 
 function PaymentModal({ show, handleClose, totalPrice, totalCut, tax, handleConfirmation }) {
 
-    const PAYMENT_METHOD = ["Cash", "EDC"];
+    const PAYMENT_METHOD = ["Cash", "EDC", "Transfer"];
 
     const [amountPaid, setAmountPaid] = useState(0);
     const [paymentMethod, setPaymentMethod] = useState('');
