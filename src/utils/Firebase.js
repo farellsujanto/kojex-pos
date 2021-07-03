@@ -5,14 +5,13 @@ import 'firebase/firestore';
 import 'firebase/storage';
 
 let config = {
-    apiKey: "AIzaSyCurqpYq8AiD61wx99lqduUZd_CHNRtfZE",
-    authDomain: "beauty-clinic-f04eb.firebaseapp.com",
-    databaseURL: "https://beauty-clinic-f04eb.firebaseio.com",
-    projectId: "beauty-clinic-f04eb",
-    storageBucket: "beauty-clinic-f04eb.appspot.com",
-    messagingSenderId: "155438243496",
-    appId: "1:155438243496:web:5d5ed2ec8853eca5f9ec9d",
-    measurementId: "G-VELF0J0MYT"
+    apiKey: "AIzaSyDSohEKTbbRCL_sq4a9tXLqaQj4Of7-ZJw",
+    authDomain: "hollywoof-23265.firebaseapp.com",
+    projectId: "hollywoof-23265",
+    storageBucket: "hollywoof-23265.appspot.com",
+    messagingSenderId: "210387137243",
+    appId: "1:210387137243:web:c1f6d3e38df6b09221d2fe",
+    measurementId: "G-CPHCCKXHVG"
 };
 
 let firebaseApp = !firebase.apps.length ? firebase.initializeApp(config) : firebase.app();

@@ -5,7 +5,7 @@ import { firebaseApp } from '../utils/Firebase';
 import firebase from 'firebase/app';
 
 import { RoleContext } from '../store/Context';
-import Logo from '../assets/img/logo.png';
+import Logo from '../assets/img/logo.jfif';
 
 import DataTables from '../components/DataTables';
 import DataTables2 from '../components/DataTables2';
@@ -340,12 +340,12 @@ function CashierTableRowToPrint({ index, data }) {
 
     return (
         <tr>
-            <td><strong style={{ fontSize: 12, fontFamily: 'tahoma', color: 'black' }}>{index + 1}</strong></td>
-            <td><strong style={{ fontSize: 15, fontFamily: 'tahoma', color: 'black' }}>{data.name}<br />{getAllStaff()}</strong></td>
-            <td><strong style={{ fontSize: 15, fontFamily: 'tahoma', color: 'black' }}>{Number(data.qty)}</strong></td>
-            <td><strong style={{ fontSize: 15, fontFamily: 'tahoma', color: 'black' }}>{numberToLocalCurrency(data.price)}</strong></td>
-            <td><strong style={{ fontSize: 15, fontFamily: 'tahoma', color: 'black' }}>{data.disc}%</strong></td>
-            <td><strong style={{ fontSize: 15, fontFamily: 'tahoma', color: 'black' }}>{numberToLocalCurrency(data.price * data.qty)}</strong></td>
+            <td><p style={{ fontSize: 12, color: 'black' }}>{index + 1}</p></td>
+            <td><p style={{ fontSize: 15, color: 'black' }}>{data.name}<br />{getAllStaff()}</p></td>
+            <td><p style={{ fontSize: 15, color: 'black' }}>{Number(data.qty)}</p></td>
+            <td><p style={{ fontSize: 15, color: 'black' }}>{numberToLocalCurrency(data.price)}</p></td>
+            <td><p style={{ fontSize: 15, color: 'black' }}>{data.disc}%</p></td>
+            <td><p style={{ fontSize: 15, color: 'black' }}>{numberToLocalCurrency(data.price * data.qty)}</p></td>
         </tr>
     );
 }
@@ -361,44 +361,42 @@ function ComponentToPrint({ cashierDatas, totalPrice, tax, totalCut, docId, curr
     }
 
     return (
-        <div>
-            <Row className='mb-4'>
+        <div style={{background: 'white'}}>
+            <Row className='mb-4' style={{background: 'white'}}>
 
                 <Col xs={3}>
                     <img src={Logo} width='100px' className='ml-4'></img>
                 </Col>
 
                 <Col xs={3}>
-                    <p style={{ fontSize: 15, fontFamily: 'tahoma', color: 'black' }}>
-                        <strong>
-                            Jl.Tentara Pelajar 80, Semarang
-                        </strong>
+                    <p style={{ fontSize: 15, color: 'black' }}>
+                        <p>
+                        Gombel Indah 2B Ngesrep Banyumanik Semarang
+                        </p>
                     </p>
-                    <p style={{ fontSize: 15, fontFamily: 'tahoma', color: 'black' }}>
-                        <strong>(024)76.42.42.42</strong>
-                        <br />
-                        <strong>08.222.365.9992</strong>
+                    <p style={{ fontSize: 15,color: 'black' }}>
+                        <p>0899 5888 888</p>
                     </p>
                 </Col>
 
             </Row>
 
-            <Row style={{ fontSize: 12, fontFamily: 'tahoma', color: 'black' }} className='mb-4'>
-                <Col xs={6}><strong>{docId} - {role}</strong></Col>
-                <Col xs={6} className='text-right'><strong>{getDate()}</strong></Col>
+            <Row style={{ fontSize: 12, color: 'black',background: 'white' }} className='mb-4'>
+                <Col xs={6}><p>{docId} - {role}</p></Col>
+                <Col xs={6} className='text-right'><p>{getDate()}</p></Col>
             </Row>
 
-            <Row>
+            <Row style={{background: 'white'}}>
                 <Col>
                     <Table className="align-items-center table-flush" responsive >
                         <thead className="thead-light">
-                            <tr style={{ olor: 'black', border: '2px solid black' }}>
+                            <tr style={{ olor: 'black', border: '1px solid black' }}>
                                 <th></th>
-                                <th style={{ fontSize: 12, fontFamily: 'tahoma', color: 'black', border: '2px solid black' }}><strong>Jasa</strong></th>
-                                <th style={{ fontSize: 12, fontFamily: 'tahoma', color: 'black', border: '2px solid black' }}><strong>Jumlah</strong></th>
-                                <th style={{ fontSize: 12, fontFamily: 'tahoma', color: 'black', border: '2px solid black' }}><strong>Harga Satuan</strong></th>
-                                <th style={{ fontSize: 12, fontFamily: 'tahoma', color: 'black', border: '2px solid black' }}><strong>Diskon</strong></th>
-                                <th style={{ fontSize: 12, fontFamily: 'tahoma', color: 'black', border: '2px solid black' }}><strong>Sub Total</strong></th>
+                                <th style={{ fontSize: 12, color: 'black', border: '1px solid black' }}><p>Jasa</p></th>
+                                <th style={{ fontSize: 12, color: 'black', border: '1px solid black' }}><p>Jumlah</p></th>
+                                <th style={{ fontSize: 12, color: 'black', border: '1px solid black' }}><p>Harga Satuan</p></th>
+                                <th style={{ fontSize: 12, color: 'black', border: '1px solid black' }}><p>Diskon</p></th>
+                                <th style={{ fontSize: 12, color: 'black', border: '1px solid black' }}><p>Sub Total</p></th>
                             </tr>
                         </thead>
                         <tbody>
@@ -422,17 +420,17 @@ function ComponentToPrint({ cashierDatas, totalPrice, tax, totalCut, docId, curr
                     </Table>
                 </Col>
             </Row>
-            <Row>
+            <Row style={{background: 'white'}}>
                 <Col>
                     <Table className="align-items-center table-flush" responsive >
                         <thead className="thead-light">
-                            <tr style={{ olor: 'black', border: '2px solid black' }}>
+                            <tr style={{ olor: 'black', border: '1px solid black' }}>
                                 <th></th>
-                                <th style={{ fontSize: 12, fontFamily: 'tahoma', color: 'black', border: '2px solid black' }}><strong>Product</strong></th>
-                                <th style={{ fontSize: 12, fontFamily: 'tahoma', color: 'black', border: '2px solid black' }}><strong>Jumlah</strong></th>
-                                <th style={{ fontSize: 12, fontFamily: 'tahoma', color: 'black', border: '2px solid black' }}><strong>Harga Satuan</strong></th>
-                                <th style={{ fontSize: 12, fontFamily: 'tahoma', color: 'black', border: '2px solid black' }}><strong>Diskon</strong></th>
-                                <th style={{ fontSize: 12, fontFamily: 'tahoma', color: 'black', border: '2px solid black' }}><strong>Sub Total</strong></th>
+                                <th style={{ fontSize: 12,  color: 'black', border: '1px solid black' }}><p>Product</p></th>
+                                <th style={{ fontSize: 12,  color: 'black', border: '1px solid black' }}><p>Jumlah</p></th>
+                                <th style={{ fontSize: 12,  color: 'black', border: '1px solid black' }}><p>Harga Satuan</p></th>
+                                <th style={{ fontSize: 12,  color: 'black', border: '1px solid black' }}><p>Diskon</p></th>
+                                <th style={{ fontSize: 12,  color: 'black', border: '1px solid black' }}><p>Sub Total</p></th>
                             </tr>
                         </thead>
                         <tbody>
@@ -456,65 +454,45 @@ function ComponentToPrint({ cashierDatas, totalPrice, tax, totalCut, docId, curr
                     </Table>
                 </Col>
             </Row>
-            <Row>
+            <Row style={{background: 'white'}}>
                 <Col xs={{ offset: 6, size: 6 }}>
                     <table style={{ float: 'right' }}>
                         <thead className="thead-light">
-                            <tr style={{ fontSize: 12, fontFamily: 'tahoma' }}>
+                            <tr style={{ fontSize: 12,  }}>
                                 <th scope="col"></th>
-                                <th scope="col"><strong style={{ fontSize: 12, fontFamily: 'tahoma', color: 'black' }}>Biaya</strong></th>
+                                <th scope="col"><p style={{ fontSize: 12,  color: 'black' }}>Biaya</p></th>
                             </tr>
                         </thead>
                         <tbody>
-                            <tr style={{ fontSize: 15, fontFamily: 'tahoma' }}>
-                                <td><strong style={{ fontSize: 12, fontFamily: 'tahoma', color: 'black' }}>Total Harga :</strong></td>
-                                <td><strong style={{ fontSize: 15, fontFamily: 'tahoma', color: 'black' }}>{numberToLocalCurrency(totalPrice)}</strong></td>
+                            <tr style={{ fontSize: 15,  }}>
+                                <td><p style={{ fontSize: 12,  color: 'black' }}>Total Harga :</p></td>
+                                <td><p style={{ fontSize: 15,  color: 'black' }}>{numberToLocalCurrency(totalPrice)}</p></td>
                             </tr>
-                            <tr style={{ fontSize: 15, fontFamily: 'tahoma' }}>
-                                <td><strong style={{ fontSize: 12, fontFamily: 'tahoma', color: 'black' }}>Total Potongan :</strong></td>
-                                <td><strong style={{ fontSize: 15, fontFamily: 'tahoma', color: 'black' }}>{numberToLocalCurrency(totalCut)}</strong></td>
+                            <tr style={{ fontSize: 15,  }}>
+                                <td><p style={{ fontSize: 12,  color: 'black' }}>Total Potongan :</p></td>
+                                <td><p style={{ fontSize: 15,  color: 'black' }}>{numberToLocalCurrency(totalCut)}</p></td>
                             </tr>
                             {/* <tr>
                                     <td><b>Tax {tax} % :</b></td>
                                     <td>{numberToLocalCurrency(calculateTax((totalPrice - totalCut), tax))}</td>
                                 </tr> */}
-                            <tr style={{ fontSize: 15, fontFamily: 'tahoma' }}>
-                                <td><strong style={{ fontSize: 12, fontFamily: 'tahoma', color: 'black' }}>Biaya Yang Harus Dibayar :</strong></td>
-                                <td><strong style={{ fontSize: 15, fontFamily: 'tahoma', color: 'black' }}>{numberToLocalCurrency(totalPrice - totalCut + calculateTax((totalPrice - totalCut), tax))}</strong></td>
+                            <tr style={{ fontSize: 15,  }}>
+                                <td><p style={{ fontSize: 12,  color: 'black' }}>Biaya Yang Harus Dibayar :</p></td>
+                                <td><p style={{ fontSize: 15,  color: 'black' }}>{numberToLocalCurrency(totalPrice - totalCut + calculateTax((totalPrice - totalCut), tax))}</p></td>
                             </tr>
-                            <tr style={{ fontSize: 15, fontFamily: 'tahoma' }}>
-                                <td><strong style={{ fontSize: 12, fontFamily: 'tahoma', color: 'black' }}>Biaya Yang Dibayar : {currPayMeth}</strong></td>
-                                <td><strong style={{ fontSize: 15, fontFamily: 'tahoma', color: 'black' }}>{numberToLocalCurrency(currPaid)}</strong></td>
+                            <tr style={{ fontSize: 15,  }}>
+                                <td><p style={{ fontSize: 12,  color: 'black' }}>Biaya Yang Dibayar : {currPayMeth}</p></td>
+                                <td><p style={{ fontSize: 15,  color: 'black' }}>{numberToLocalCurrency(currPaid)}</p></td>
                             </tr>
-                            <tr style={{ fontSize: 15, fontFamily: 'tahoma' }}>
-                                <td><strong style={{ fontSize: 12, fontFamily: 'tahoma', color: 'black' }}>Kembalian :</strong></td>
-                                <td><strong style={{ fontSize: 15, fontFamily: 'tahoma', color: 'black' }}>{currPayMeth === 'Cash' ? numberToLocalCurrency(currPaid - (totalPrice - totalCut + calculateTax((totalPrice - totalCut), tax))) : 0}</strong></td>
+                            <tr style={{ fontSize: 15,  }}>
+                                <td><p style={{ fontSize: 12,  color: 'black' }}>Kembalian :</p></td>
+                                <td><p style={{ fontSize: 15,  color: 'black' }}>{currPayMeth === 'Cash' ? numberToLocalCurrency(currPaid - (totalPrice - totalCut + calculateTax((totalPrice - totalCut), tax))) : 0}</p></td>
                             </tr>
                         </tbody>
                     </table>
                 </Col>
             </Row>
 
-            <Row className='mt-1'>
-                <Col>
-                    <div className="w-25 float-right">
-                        <div style={{ padding: '60px 40px 0', borderBottom: '4px solid black' }}>
-
-                        </div>
-                        <p className='text-center mt-3' style={{ fontWeight: 'bold', color: 'black' }}>Penerima</p>
-                    </div>
-                </Col>
-            </Row>
-
-            {/* <Row className='mt-5' style={{ borderTop: '2px dotted black' }}>
-                <Col>
-                    <h5 className='text-center'>
-                        <strong style={{ fontSize: 12, fontFamily: 'tahoma', color: 'black' }}>Terima kasih atas Kunjungan Anda</strong>
-                        <br />
-                        <i><strong style={{ fontSize: 12, fontFamily: 'tahoma', color: 'black' }}>"Your Healthy Skin Solution"</strong></i>
-                    </h5>
-                </Col>
-            </Row> */}
         </div>
     );
 }
@@ -548,8 +526,8 @@ function ConfirmationModal({ show, handleClose, cashierDatas, totalPrice, totalC
                     />
                 </Form.Group> */}
 
-                <div style={{ display: 'none' }}>
-                    <div ref={componentRef}>
+                <div style={{ display: 'none' }} style={{background: 'white'}}>
+                    <div ref={componentRef} style={{background: 'white'}}>
                         <ComponentToPrint
                             cashierDatas={cashierDatas}
                             totalPrice={totalPrice}

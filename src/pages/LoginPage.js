@@ -26,7 +26,7 @@ export default () => {
     const [, setRole] = useContext(RoleContext);
 
     function signIn() {
-        if (password === 'gabrielclinic') {
+        if (password === 'hollywoof') {
             setRole(email);
             setAuth(true);
         }
