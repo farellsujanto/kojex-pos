@@ -362,6 +362,7 @@ function ComponentToPrint({ cashierDatas, totalPrice, tax, totalCut, docId, curr
 
     return (
         <div style={{background: 'white'}}>
+            <br />
             <Row className='mb-4' style={{background: 'white'}}>
 
                 <Col xs={3}>
@@ -460,7 +461,7 @@ function ComponentToPrint({ cashierDatas, totalPrice, tax, totalCut, docId, curr
                         <thead className="thead-light">
                             <tr style={{ fontSize: 12,  }}>
                                 <th scope="col"></th>
-                                <th scope="col"><p style={{ fontSize: 12,  color: 'black' }}>Biaya</p></th>
+                                <th scope="col"><p style={{ fontSize: 16,  color: 'black' }}>Biaya</p></th>
                             </tr>
                         </thead>
                         <tbody>
@@ -526,7 +527,7 @@ function ConfirmationModal({ show, handleClose, cashierDatas, totalPrice, totalC
                     />
                 </Form.Group> */}
 
-                <div style={{ display: 'none' }} style={{background: 'white'}}>
+                <div style={{ display: 'none' }}>
                     <div ref={componentRef} style={{background: 'white'}}>
                         <ComponentToPrint
                             cashierDatas={cashierDatas}

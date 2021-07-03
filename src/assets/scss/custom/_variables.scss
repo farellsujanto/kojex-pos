@@ -44,7 +44,7 @@ $enable-print-styles:       true !default;
 // Color system
 
 $white:    #fff !default;
-$gray-100: #f6f9fc !default;
+$gray-100: #ffffff !default;
 $gray-200: #e9ecef !default;
 $gray-300: #dee2e6 !default;
 $gray-400: #ced4da !default;
@@ -184,8 +184,8 @@ $shapes-default-colors: map-merge((
 $shapes-light-colors: () !default;
 $shapes-light-colors: map-merge((
   "step-1-gradient-bg":         #b2cbe1,
-  "step-2-gradient-bg":         #f6f9fc,
-  "step-3-gradient-bg":         #f6f9fc,
+  "step-2-gradient-bg":         #ffffff,
+  "step-3-gradient-bg":         #ffffff,
   "span-1-bg":                  #b4cce1,
   "span-2-bg":                  #c5dbef,
   "span-3-bg":                  #b9d5ed,
@@ -232,7 +232,7 @@ $love-color: $red !default;
 // Body
 
 
-$body-bg: #f8f9fe !default;
+$body-bg: #ffffff !default;
 $body-color: $gray-700 !default;
 
 
